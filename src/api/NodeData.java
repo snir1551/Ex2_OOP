@@ -20,6 +20,14 @@ public class NodeData implements node_data{
         info = null;
         tag = 0;
     }
+    public NodeData(int key,Point3D location,double weight,String info, int tag)
+    {
+        this.key = key;
+        this.location = new Point3D(location);
+        this.weight = weight;
+        this.info = info;
+        this.tag = tag;
+    }
     public NodeData(int key,Point3D location)
     {
         this.key = key;
@@ -42,7 +50,7 @@ public class NodeData implements node_data{
 
     @Override
     public double getWeight() {
-        return weight;
+        return this.weight;
     }
 
     @Override

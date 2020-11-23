@@ -74,25 +74,98 @@ class NodeDataTest {
     @Test
     void getWeight() {
 
+        Point3D location = new Point3D(1,2,3);
+        Random rand = new Random();
+        double weight = 0;
+        for(int i = 0; i<10000000; i++)
+        {
+            weight = rand.nextInt(1000);
+            node_data node = new NodeData(i,location,weight,"",0);
+            assertTrue(node.getWeight() == weight);
+        }
+        node_data node = new NodeData(3,location,50,"",0);
+        assertTrue(node.getWeight() == 50);
+
     }
 
     @Test
     void setWeight() {
+        Point3D location = new Point3D(1,2,3);
+        Random rand = new Random();
+        double weight = 0;
+        for(int i = 0; i<10000000; i++)
+        {
+            weight = rand.nextInt(1000);
+            node_data node = new NodeData(i);
+            node.setWeight(weight);
+            assertTrue(node.getWeight() == weight);
+        }
+        node_data node = new NodeData(3);
+        node.setWeight(100);
+        assertTrue(node.getWeight() == 100);
     }
 
     @Test
     void getInfo() {
+        Point3D location = new Point3D(1,2,3);
+        Random rand = new Random();
+        String info = "";
+        for(int i = 0; i<10; i++)
+        {
+            info += "a";
+            node_data node = new NodeData(i,location,0,info,0);
+            assertTrue(node.getInfo().equals(info));
+        }
+        node_data node = new NodeData(3,location,0,"OOP",0);
+        assertTrue(node.getInfo().equals("OOP"));
     }
 
     @Test
     void setInfo() {
+        Point3D location = new Point3D(1,2,3);
+        Random rand = new Random();
+        String info = "";
+        for(int i = 0; i<10; i++)
+        {
+            info += "a";
+            node_data node = new NodeData(i);
+            node.setInfo(info);
+            assertTrue(node.getInfo().equals(info));
+        }
+        node_data node = new NodeData(3);
+        node.setInfo("OOP");
+        assertTrue(node.getInfo().equals("OOP"));
     }
 
     @Test
     void getTag() {
+        Point3D location = new Point3D(1,2,3);
+        Random rand = new Random();
+        int tag = 0;
+        for(int i = 0; i<10000000; i++)
+        {
+            tag = rand.nextInt(1000);
+            node_data node = new NodeData(i,location,0,"",tag);
+            assertTrue(node.getTag() == tag);
+        }
+        node_data node = new NodeData(3,location,50,"",1000);
+        assertTrue(node.getTag() == 1000);
     }
 
     @Test
     void setTag() {
+        Point3D location = new Point3D(1,2,3);
+        Random rand = new Random();
+        int tag = 0;
+        for(int i = 0; i<10000000; i++)
+        {
+            tag = rand.nextInt(1000);
+            node_data node = new NodeData(i);
+            node.setTag(tag);
+            assertTrue(node.getTag() == tag);
+        }
+        node_data node = new NodeData(3);
+        node.setTag(100);
+        assertTrue(node.getTag() == 100);
     }
 }
