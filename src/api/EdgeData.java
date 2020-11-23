@@ -8,6 +8,11 @@ public class EdgeData implements edge_data {
     private String info;
     private int tag;
 
+    public EdgeData(double weight)
+    {
+        this.weight = weight;
+    }
+
     @Override
     public int getSrc() {
         return this.src;
