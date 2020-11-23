@@ -2,6 +2,7 @@ package api;
 
 import gameClient.util.Point3D;
 import gameClient.util.Range;
+import org.w3c.dom.Node;
 
 public class NodeData implements node_data{
 
@@ -10,6 +11,15 @@ public class NodeData implements node_data{
     private double weight;
     private String info;
     private int tag;
+
+    public NodeData(int key)
+    {
+        this.key = key;
+        location = Point3D.ORIGIN;
+        weight = 0;
+        info = null;
+        tag = 0;
+    }
     public NodeData(int key,Point3D location)
     {
         this.key = key;
