@@ -7,8 +7,8 @@ import java.util.LinkedList;
 public class DWGraph_DS implements directed_weighted_graph{
     private HashMap<Integer,node_data> mapNode; //nodes
     private HashMap<Integer,HashMap<Integer,edge_data>> mapEdge; //edges "neighbors"
-    private int MC;
-    private int edgeSize;
+    private int MC; //num of changes in the graph
+    private int edgeSize; // num of edge in the graph
 
     public DWGraph_DS()
     {
@@ -18,6 +18,23 @@ public class DWGraph_DS implements directed_weighted_graph{
         MC = 0;
     }
 
+    public DWGraph_DS(directed_weighted_graph graph)
+    {
+        this();
+        for(node_data n : graph.getV()) //go through all the vertices of the wgraph
+        {
+            addNode(new NodeData(n)); //add them to this graph
+        }
+        for(node_data nd : graph.getV()) // go through all the vertices of the wgraph
+        {
+            for(edge_data n : graph.getE(nd.getKey())) // Go through all the vertices of the neighbors of the wgraph
+            {
+                this.connect(n.getSrc(),n.getDest(),n.getWeight()); //add for this graph edge like in wgraph
+            }
+        }
+        this.MC = graph.getMC(); //count of changes in the graph need to be like wgraph
+    }
+
     @Override
     public node_data getNode(int key) {
         return mapNode.get(key); //return node_data by his key
@@ -25,18 +42,35 @@ public class DWGraph_DS implements directed_weighted_graph{
 
     @Override
     public edge_data getEdge(int src, int dest) {
-        return mapEdge.get(src).get(dest); //return edge_data by src and dest
+        if(existNode(src))
+            return mapEdge.get(src).get(dest);
+        return null;
+
     }
 
     @Override
     public void addNode(node_data n) {
-        mapNode.put(n.getKey(),n); //put new node in the dwgraph
+        if(!existNode(n.getKey()))
+        {
+            mapNode.put(n.getKey(),n); //put new node in the dwgraph
+            mapEdge.put(n.getKey(),new HashMap<>());
+            ++MC;
+        }
     }
 
     @Override
     public void connect(int src, int dest, double w) {
-        mapEdge.get(src).put(dest,new EdgeData(w)); //add edge between src to dest
-        mapEdge.get(dest).put(src,new EdgeData(w)); //add edge between dest to src
+        if(src != dest && existNode(src) && existNode(dest) && w >= 0)
+        {
+            if(!hasEdge(src,dest))
+            {
+                ++edgeSize;
+            }
+            edge_data newEdge = new EdgeData(src,dest,w);
+            mapEdge.get(src).put(dest,newEdge);
+            ++MC;
+        }
+
     }
 
     @Override
@@ -46,22 +80,40 @@ public class DWGraph_DS implements directed_weighted_graph{
 
     @Override
     public Collection<edge_data> getE(int node_id) {
-        LinkedList<edge_data> listNeighbors = new LinkedList<edge_data>();
-        for(Integer n : mapEdge.get(node_id).keySet())
-        {
-            listNeighbors.addLast(mapEdge.get(node_id).get(n));
-        }
-        return listNeighbors;
+        if(existNode(node_id))
+            return mapEdge.get(node_id).values();
+        return null;
     }
 
     @Override
     public node_data removeNode(int key) {
+        if(existNode(key))
+        {
+            for(node_data node : getV())
+            {
+                if(hasEdge(node.getKey(),key))
+                {
+                    mapEdge.get(node.getKey()).remove(key);
+                    --edgeSize;
+                    ++MC;
+                }
+            }
+            MC += getE(key).size();
+            edgeSize -= getE(key).size();
+            mapEdge.remove(key);
+        }
         return mapNode.remove(key);
     }
 
     @Override
     public edge_data removeEdge(int src, int dest) {
-        return mapEdge.get(src).remove(dest);
+        if(existNode(src) && hasEdge(src,dest))
+        {
+            --edgeSize;
+            ++MC;
+            return mapEdge.get(src).remove(dest);
+        }
+        return null;
     }
 
     @Override
@@ -71,11 +123,26 @@ public class DWGraph_DS implements directed_weighted_graph{
 
     @Override
     public int edgeSize() {
-        return mapEdge.size();
+        return edgeSize;
     }
 
     @Override
     public int getMC() {
-        return 0;
+        return MC;
     }
+
+    private boolean hasEdge(int node1,int node2)
+    {
+        if(mapEdge.get(node1).containsKey(node2))
+            return true;
+        else
+            return false;
+    }
+
+    private boolean existNode(int node)
+    {
+        return mapNode.containsKey(node);
+    }
+
+
 }

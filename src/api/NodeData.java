@@ -4,6 +4,8 @@ import gameClient.util.Point3D;
 import gameClient.util.Range;
 import org.w3c.dom.Node;
 
+import java.util.Objects;
+
 public class NodeData implements node_data{
 
     private int key;
@@ -15,7 +17,7 @@ public class NodeData implements node_data{
     public NodeData(int key)
     {
         this.key = key;
-        location = Point3D.ORIGIN;
+        location = new Point3D(Point3D.ORIGIN);
         weight = 0;
         info = null;
         tag = 0;
@@ -32,6 +34,15 @@ public class NodeData implements node_data{
     {
         this.key = key;
         this.location = new Point3D(location);
+    }
+
+    public NodeData(node_data node)
+    {
+        this.key = node.getKey();
+        this.location = new Point3D(node.getLocation().x(),node.getLocation().y(),node.getLocation().z());
+        this.weight = node.getWeight();
+        this.info = node.getInfo();
+        this.tag = node.getTag();
     }
     @Override
     public int getKey() {
@@ -76,5 +87,22 @@ public class NodeData implements node_data{
     @Override
     public void setTag(int t) {
         this.tag = t;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NodeData nodeData = (NodeData) o;
+        return key == nodeData.key &&
+                Double.compare(nodeData.weight, weight) == 0 &&
+                tag == nodeData.tag &&
+                Objects.equals(location, nodeData.location) &&
+                Objects.equals(info, nodeData.info);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, location, weight, info, tag);
     }
 }
