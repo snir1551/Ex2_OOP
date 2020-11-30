@@ -42,6 +42,8 @@ class DWGraph_DSTest {
         node_data node4 = new NodeData(4);
         node_data node5 = new NodeData(5);
         assertNull(graph.getEdge(node0.getKey(),node1.getKey()));
+        graph.addNode(node0);
+        graph.addNode(node1);
         graph.connect(node0.getKey(),node1.getKey(),20);
         edge_data edge = graph.getEdge(node0.getKey(),node1.getKey());
         assertTrue(edge.getSrc() == node0.getKey());
@@ -71,18 +73,64 @@ class DWGraph_DSTest {
         directed_weighted_graph graph = new DWGraph_DS();
         node_data node1 = new NodeData(1);
         node_data node2 = new NodeData(2);
+        node_data node3 = new NodeData(3);
+        node_data node4 = new NodeData(4);
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
+        graph.addNode(node4);
         graph.connect(node1.getKey(),node2.getKey(),50);
         edge_data edge = graph.getEdge(node1.getKey(),node2.getKey());
-        System.out.println(edge.getWeight());
+        assertTrue(edge.getSrc() == node1.getKey());
+        assertTrue(edge.getDest() == node2.getKey());
+        assertTrue(edge.getWeight() == 50);
+        edge = graph.getEdge(node4.getKey(),node1.getKey());
+        assertNull(edge);
+        edge = graph.getEdge(node1.getKey(),node4.getKey());
+        assertNull(edge);
+        graph.connect(node4.getKey(),node1.getKey(),10);
+        edge = graph.getEdge(node4.getKey(),node1.getKey());
+        assertTrue(edge.getSrc() == node4.getKey());
+        assertTrue(edge.getDest() == node1.getKey());
+        assertTrue(edge.getWeight() == 10);
+        edge = graph.getEdge(node1.getKey(),node4.getKey());
+        assertNull(edge);
+
+
 
     }
 
     @Test
     void getV() {
+
+        directed_weighted_graph graph = new DWGraph_DS();
+        for(int i = 10; i < 20; i++)
+        {
+            node_data node = new NodeData(i);
+        }
+        int i = 9;
+        for(node_data n : graph.getV())
+        {
+            ++i;
+            assertEquals(graph.getNode(i), n);
+
+        }
+        assertTrue(graph.nodeSize() == i);
     }
 
     @Test
     void getE() {
+        directed_weighted_graph graph = new DWGraph_DS();
+        for(int i = 10; i < 20; i++)
+        {
+            node_data node = new NodeData(i);
+        }
+        for(int i = 10; i < 20; i++)
+        {
+            graph.connect(10,i,30+i);
+        }
+        
+
     }
 
     @Test

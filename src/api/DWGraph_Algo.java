@@ -1,5 +1,16 @@
 package api;
 
+import Wrapper.DirectedWeightedGraphJsonWrapper;
+import Wrapper.EdgeDataJsonWrapper;
+import Wrapper.NodeDataJsonWrapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import gameClient.util.Point3D;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class DWGraph_Algo implements dw_graph_algorithms{
@@ -29,112 +40,132 @@ public class DWGraph_Algo implements dw_graph_algorithms{
 
     @Override
     public boolean isConnected() {
-        if(graph.nodeSize() == 0)
-            return true;
-
-        BFS(graph.getV().iterator().next());
-
-        for(node_data node : graph.getV())
-        {
-            if(node.getInfo().equals("WHITE"))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return false;
     }
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        return 0;
+        if(graph.getNode(src) == null || graph.getNode(dest) == null) //if one of the nodes not exist return -1
+            return -1;
+        dijkstra(graph.getNode(src)); //start dijkstra algorithm on the (src node)
+        if(graph.getNode(dest).getWeight() >= Double.MAX_VALUE)
+            return -1;
+        return graph.getNode(dest).getWeight(); // return the shortest path between them by the tag that contain the distance
     }
 
     @Override
     public List<node_data> shortestPath(int src, int dest) {
-        return null;
+        LinkedList<node_data> list = new LinkedList<>(); //list of the path from src to dest
+        if(graph.getNode(src) == null || graph.getNode(dest) == null) // if src or dest not exist return null
+        {
+            return null;
+        }
+        if(src == dest) //if src equal to dest
+        {
+            list.add(graph.getNode(src)); //add src to list
+            return list; //return list
+        }
+        HashMap<Integer,node_data> pv = dijkstra(this.graph.getNode(src));//start dijkstra on src and return hashmap that contain the path fathers
+        if(graph.getNode(dest).getInfo().equals("WHITE")) //if the dest is WHITE so we didnt move on him so return null
+        {
+            return null;
+        }
+
+        list.addFirst(graph.getNode(dest)); //add to list dest
+        node_data t = pv.get(dest); // t = next node
+
+        while(t != null)
+        {
+            list.addFirst(graph.getNode(t.getKey())); // add the t to list
+            t = pv.get(t.getKey()); // t = next node
+        }
+
+        return list;
     }
 
     @Override
     public boolean save(String file) {
-        return false;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        String json = gson.toJson(new DirectedWeightedGraphJsonWrapper(this.graph));
+
+        try {
+            PrintWriter pw = new PrintWriter(new File(file));
+            pw.write(json);
+            pw.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
     public boolean load(String file) {
-        return false;
+        try {
+            DirectedWeightedGraphJsonWrapper graphJsonWrapper = new Gson().fromJson(new FileReader(new File(file)), DirectedWeightedGraphJsonWrapper.class);
+            this.graph = new DWGraph_DS();
+
+            for(NodeDataJsonWrapper nodeDataJsonWrapper : graphJsonWrapper.getNodes()) {
+                this.graph.addNode(new NodeData(nodeDataJsonWrapper.getKey(),
+                        new Point3D(nodeDataJsonWrapper.getLocation().getX(), nodeDataJsonWrapper.getLocation().getY(),
+                                    nodeDataJsonWrapper.getLocation().getZ()),
+                        nodeDataJsonWrapper.getWeight(), nodeDataJsonWrapper.getInfo(), nodeDataJsonWrapper.getTag()));
+            }
+
+            for (EdgeDataJsonWrapper edgeDataJsonWrapper : graphJsonWrapper.getEdges()) {
+                this.graph.connect(edgeDataJsonWrapper.getSrc(), edgeDataJsonWrapper.getDest(),
+                        edgeDataJsonWrapper.getWeight());
+            }
+            //private mc
+            return true;
+        } catch(IllegalStateException | FileNotFoundException e) {
+            return false;
+        }
+
     }
 
-//    private HashMap<Integer, node_data> dijkstra(node_data node)
-//    {
-//        PriorityQueue<node_data> queue = new PriorityQueue<>(); // init PriorityQueue of node_info
-//        HashMap<Integer,node_data> mapPath = new HashMap<>(); //init HashMap of key: Integer , value: node_info
-//        for(node_data ni : graph.getV()) //We go through all the vertices
-//        {
-//            ni.setTag(Integer.MAX_VALUE); //set their tag to Max_Value
-//            ni.setInfo("WHITE"); //  set their info to WHITE
-//            mapPath.put(ni.getKey(),null); //put in our HashMap (father path)  - key: key of the node , value: null
-//            queue.add(ni); //add to our PriorityQueue the node
-//        }
-//        node.setTag(0); //set tag of our start node to be 0
-//        queue.remove(node);//decreaseKey - we're removing the node and add him back
-//        queue.add(node);
-//        while(!queue.isEmpty()) // while our PriorityQueue is not empty
-//        {
-//            node_data n = queue.remove(); //remove our node that we're working on him
-//            for(edge_data edge : graph.getE(n.getKey())) //We go through all his neighbors
-//            {
-//                node_data ni = graph.getNode(edge.getDest());
-//                if(ni.getInfo().equals("WHITE")) //if he is WHITE We never went through it
-//                {
-//                    if(n.getTag() < Double.MAX_VALUE) { //if tag smallest than MAX_VALUE
-//                        double t = n.getTag() + edge.getWeight();
-//                        if (ni.getTag() > t) { //if the tag of the neighbor bigger than new path tag so update the neighbor tag
-//                            ni.setTag((int)t); //neighbor tag to be t
-//                            mapPath.put(ni.getKey(), n); //update the father path
-//                            queue.remove(ni);//decreaseKey - we're removing the node and add him back
-//                            queue.add(ni);
-//                        }
-//                    }
-//                }
-//            }
-//            n.setInfo("BLACK"); //we finish with the node set info to BLACK
-//        }
-//        return mapPath; //return the father path
-//
-//    }
 
 
-    public HashMap<Integer,node_data> BFS(node_data n) // O(|V|+|E|)
+
+    private HashMap<Integer, node_data> dijkstra(node_data node)
     {
-        HashMap<Integer,node_data> bfsMap = new HashMap<>();
-        for(node_data node : graph.getV())
+        PriorityQueue<node_data> queue = new PriorityQueue<>(); // init PriorityQueue of node_info
+        HashMap<Integer,node_data> mapPath = new HashMap<>(); //init HashMap of key: Integer , value: node_info
+        for(node_data ni : graph.getV()) //We go through all the vertices
         {
-            node.setInfo("WHITE"); // all nodes WHITE
-            node.setTag(Integer.MAX_VALUE); // all nodes MAX_VALUE
-            bfsMap.put(node.getKey(),null);
+            ni.setWeight(Double.MAX_VALUE); //set their tag to Max_Value
+            ni.setInfo("WHITE"); //  set their info to WHITE
+            mapPath.put(ni.getKey(),null); //put in our HashMap (father path)  - key: key of the node , value: null
+            queue.add(ni); //add to our PriorityQueue the node
         }
-        n.setInfo("Gray");
-        n.setTag(0);
-        Queue<node_data> q = new LinkedList<>();
-        q.add(n);
-
-        while(!q.isEmpty())
+        node.setWeight(0); //set tag of our start node to be 0
+        queue.remove(node);//decreaseKey - we're removing the node and add him back
+        queue.add(node);
+        while(!queue.isEmpty()) // while our PriorityQueue is not empty
         {
-            node_data newNode = q.remove();
-            for(edge_data edge : graph.getE(newNode.getKey()))
+            node_data n = queue.remove(); //remove our node that we're working on him
+            for(edge_data edge : graph.getE(n.getKey())) //We go through all his neighbors
             {
-                node_data node = graph.getNode(edge.getDest());
-                if(node.getInfo().equals("WHITE"))
+                node_data ni = graph.getNode(edge.getDest());
+                if(ni.getInfo().equals("WHITE")) //if he is WHITE We never went through it
                 {
-                    node.setInfo("GRAY");
-                    node.setTag(newNode.getTag() + 1);
-                    q.add(node);
-                    bfsMap.put(node.getKey(),newNode);
+                    if(n.getWeight() < Double.MAX_VALUE) { //if tag smallest than MAX_VALUE
+                        double t = n.getWeight() + edge.getWeight();
+                        if (ni.getWeight() > t) { //if the tag of the neighbor bigger than new path tag so update the neighbor tag
+                            ni.setWeight(t); //neighbor tag to be t
+                            mapPath.put(ni.getKey(), n); //update the father path
+                            queue.remove(ni);//decreaseKey - we're removing the node and add him back
+                            queue.add(ni);
+                        }
+                    }
                 }
             }
-            newNode.setInfo("BLACK");
+            n.setInfo("BLACK"); //we finish with the node set info to BLACK
         }
-        return bfsMap;
+        return mapPath; //return the father path
+
     }
+
+
 }
