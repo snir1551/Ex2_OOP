@@ -1,4 +1,4 @@
-package Wrapper;
+package JsonWrapper;
 
 import api.edge_data;
 

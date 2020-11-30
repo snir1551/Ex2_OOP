@@ -107,15 +107,15 @@ class DWGraph_DSTest {
         for(int i = 10; i < 20; i++)
         {
             node_data node = new NodeData(i);
+            graph.addNode(node);
         }
-        int i = 9;
+        int j = 0;
         for(node_data n : graph.getV())
         {
-            ++i;
-            assertEquals(graph.getNode(i), n);
-
+            assertEquals(graph.getNode(n.getKey()), n);
+            ++j;
         }
-        assertTrue(graph.nodeSize() == i);
+        assertTrue(graph.nodeSize() == j);
     }
 
     @Test
@@ -124,21 +124,63 @@ class DWGraph_DSTest {
         for(int i = 10; i < 20; i++)
         {
             node_data node = new NodeData(i);
+            graph.addNode(node);
         }
         for(int i = 10; i < 20; i++)
         {
             graph.connect(10,i,30+i);
         }
-        
+        int i = 10;
+        for(edge_data ed : graph.getE(10))
+        {
+//            assertEquals(graph.getEdge(10,i),ed);
+        }
+//        assertTrue(graph.edgeSize() == 11);
+
 
     }
 
     @Test
     void removeNode() {
+        directed_weighted_graph graph = new DWGraph_DS();
+        for(int i = 0; i < 5; i++)
+        {
+            node_data node = new NodeData(i);
+            graph.addNode(node);
+        }
+        graph.connect(0,1,0);
+        graph.connect(1,0,1);
+        graph.connect(0,2,2);
+        graph.connect(3,0,4);
+        graph.connect(4,3,5);
+        graph.connect(3,4,6);
+        assertTrue(graph.nodeSize() == 5);
+        assertTrue(graph.edgeSize() == 6);
+        graph.removeNode(0);
+        assertTrue(graph.nodeSize() == 5);
+        assertTrue(graph.edgeSize() == 2);
+        assertNull(graph.getEdge(0,1));
+        assertNull(graph.getEdge(1,0));
+        assertNull(graph.getEdge(0,2));
+        assertNull(graph.getEdge(3,0));
+        assertNotNull(graph.getEdge(4,3));
+        assertNotNull(graph.getEdge(3,4));
+
+
     }
 
     @Test
     void removeEdge() {
+        directed_weighted_graph graph = new DWGraph_DS();
+        for(int i = 0; i < 5; i++)
+        {
+            node_data node = new NodeData(i);
+            graph.addNode(node);
+        }
+        assertTrue(graph.edgeSize() == 0);
+        graph.connect(0,1,0);
+        assertTrue(graph.edgeSize() == 1);
+
     }
 
     @Test

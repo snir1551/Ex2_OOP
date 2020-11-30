@@ -1,8 +1,8 @@
 package api;
 
-import Wrapper.DirectedWeightedGraphJsonWrapper;
-import Wrapper.EdgeDataJsonWrapper;
-import Wrapper.NodeDataJsonWrapper;
+import JsonWrapper.DirectedWeightedGraphJsonWrapper;
+import JsonWrapper.EdgeDataJsonWrapper;
+import JsonWrapper.NodeDataJsonWrapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import gameClient.util.Point3D;
@@ -103,23 +103,16 @@ public class DWGraph_Algo implements dw_graph_algorithms{
     @Override
     public boolean load(String file) {
         try {
-            DirectedWeightedGraphJsonWrapper graphJsonWrapper = new Gson().fromJson(new FileReader(new File(file)), DirectedWeightedGraphJsonWrapper.class);
-            this.graph = new DWGraph_DS();
-
-            for(NodeDataJsonWrapper nodeDataJsonWrapper : graphJsonWrapper.getNodes()) {
-                this.graph.addNode(new NodeData(nodeDataJsonWrapper.getKey(),
-                        new Point3D(nodeDataJsonWrapper.getLocation().getX(), nodeDataJsonWrapper.getLocation().getY(),
-                                    nodeDataJsonWrapper.getLocation().getZ()),
-                        nodeDataJsonWrapper.getWeight(), nodeDataJsonWrapper.getInfo(), nodeDataJsonWrapper.getTag()));
+            if(graph != null)
+            {
+                DirectedWeightedGraphJsonWrapper graphJsonWrapper = new Gson().fromJson(new FileReader(new File(file)), DirectedWeightedGraphJsonWrapper.class);
+                graph = new DWGraph_DS(graphJsonWrapper);
+                return true;
             }
-
-            for (EdgeDataJsonWrapper edgeDataJsonWrapper : graphJsonWrapper.getEdges()) {
-                this.graph.connect(edgeDataJsonWrapper.getSrc(), edgeDataJsonWrapper.getDest(),
-                        edgeDataJsonWrapper.getWeight());
-            }
-            //private mc
-            return true;
-        } catch(IllegalStateException | FileNotFoundException e) {
+            else
+                return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
             return false;
         }
 

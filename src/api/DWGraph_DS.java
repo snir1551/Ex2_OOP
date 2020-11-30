@@ -1,8 +1,15 @@
 package api;
 
+import JsonWrapper.DirectedWeightedGraphJsonWrapper;
+import JsonWrapper.EdgeDataJsonWrapper;
+import JsonWrapper.NodeDataJsonWrapper;
+import com.google.gson.Gson;
+import gameClient.util.Point3D;
+
+import java.io.File;
+import java.io.FileReader;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class DWGraph_DS implements directed_weighted_graph{
     private HashMap<Integer,node_data> mapNode; //nodes
@@ -35,6 +42,18 @@ public class DWGraph_DS implements directed_weighted_graph{
             }
         }
         this.MC = graph.getMC(); //count of changes in the graph need to be like wgraph
+    }
+
+    public DWGraph_DS(DirectedWeightedGraphJsonWrapper graphJsonWrapper)
+    {
+        for(NodeDataJsonWrapper nodeDataJsonWrapper : graphJsonWrapper.getNodes()) {
+            addNode(new NodeData(nodeDataJsonWrapper));
+        }
+        for (EdgeDataJsonWrapper edgeDataJsonWrapper : graphJsonWrapper.getEdges()) {
+            connect(edgeDataJsonWrapper.getSrc(), edgeDataJsonWrapper.getDest(),
+                    edgeDataJsonWrapper.getWeight());
+        }
+        MC = graphJsonWrapper.getMc();
     }
 
     @Override

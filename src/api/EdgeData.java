@@ -1,5 +1,8 @@
 package api;
 
+import JsonWrapper.EdgeDataJsonWrapper;
+import JsonWrapper.NodeDataJsonWrapper;
+
 import java.util.Objects;
 
 public class EdgeData implements edge_data {
@@ -27,6 +30,7 @@ public class EdgeData implements edge_data {
         this.info = info;
         this.tag = tag;
     }
+
 
     @Override
     public int getSrc() {

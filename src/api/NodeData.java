@@ -1,5 +1,7 @@
 package api;
 
+import JsonWrapper.DirectedWeightedGraphJsonWrapper;
+import JsonWrapper.NodeDataJsonWrapper;
 import gameClient.util.Point3D;
 import gameClient.util.Range;
 import org.w3c.dom.Node;
@@ -43,6 +45,15 @@ public class NodeData implements node_data{
         this.weight = node.getWeight();
         this.info = node.getInfo();
         this.tag = node.getTag();
+    }
+
+    public NodeData(NodeDataJsonWrapper nodeJsonWrapper)
+    {
+        this.key = nodeJsonWrapper.getKey();
+        this.location = new Point3D(nodeJsonWrapper.getLocation().getX(),nodeJsonWrapper.getLocation().getY(),nodeJsonWrapper.getLocation().getZ());
+        this.weight = nodeJsonWrapper.getWeight();
+        this.info = nodeJsonWrapper.getInfo();
+        this.tag = nodeJsonWrapper.getTag();
     }
     @Override
     public int getKey() {
