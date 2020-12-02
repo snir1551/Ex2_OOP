@@ -8,8 +8,7 @@ import gameClient.util.Point3D;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 public class DWGraph_DS implements directed_weighted_graph{
     private HashMap<Integer,node_data> mapNode; //nodes
@@ -38,7 +37,8 @@ public class DWGraph_DS implements directed_weighted_graph{
         {
             for(edge_data n : graph.getE(nd.getKey())) // Go through all the vertices of the neighbors of the wgraph
             {
-                this.connect(n.getSrc(),n.getDest(),n.getWeight()); //add for this graph edge like in wgraph
+                edge_data edge = new EdgeData(n); //used copy constructor
+                connect(edge); // used the private connect that get edge_data
             }
         }
         this.MC = graph.getMC(); //count of changes in the graph need to be like wgraph
@@ -106,16 +106,8 @@ public class DWGraph_DS implements directed_weighted_graph{
      */
     @Override
     public void connect(int src, int dest, double w) {
-        if(existNode(src) && existNode(dest) && w >= 0)
-        {
-            if(!hasEdge(src,dest))
-            {
-                ++edgeSize;
-            }
-            mapEdgeOut.get(src).put(dest,new EdgeData(src,dest,w));
-            mapEdgeIn.get(dest).put(src,new EdgeData(src,dest,w));
-            ++MC;
-        }
+
+        connect(new EdgeData(src,dest,w));
 
     }
 
@@ -155,11 +147,13 @@ public class DWGraph_DS implements directed_weighted_graph{
     public node_data removeNode(int key) {
         if(existNode(key))
         {
-            for(Integer i : mapEdgeIn.get(key).keySet())
+            List<Integer> list = new ArrayList<>(mapEdgeIn.get(key).keySet());
+            for(Integer i : list)
             {
                 removeEdge(i,key); //O(1)
             }
-            for(Integer i : mapEdgeOut.get(key).keySet())
+            list = new ArrayList<>(mapEdgeOut.get(key).keySet());
+            for(Integer i : list)
             {
                 removeEdge(key,i); // O(1)
             }
@@ -229,5 +223,18 @@ public class DWGraph_DS implements directed_weighted_graph{
         return mapNode.containsKey(node);
     }
 
+    private void connect(edge_data edge)
+    {
+        if(existNode(edge.getSrc()) && existNode(edge.getDest()) && edge.getWeight() >= 0)
+        {
+            if(!hasEdge(edge.getSrc(),edge.getDest()))
+            {
+                ++edgeSize;
+            }
+            mapEdgeOut.get(edge.getSrc()).put(edge.getDest(),edge);
+            mapEdgeIn.get(edge.getDest()).put(edge.getSrc(),edge);
+            ++MC;
+        }
+    }
 
 }

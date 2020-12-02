@@ -31,6 +31,15 @@ public class EdgeData implements edge_data {
         this.tag = tag;
     }
 
+    public EdgeData(edge_data edge)
+    {
+        this.src = edge.getSrc();
+        this.dest = edge.getDest();
+        this.weight = edge.getWeight();
+        this.info = edge.getInfo();
+        this.tag = edge.getTag();
+    }
+
     /**
      * The id of the source node of this edge.
      * @return src

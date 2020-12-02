@@ -40,7 +40,10 @@ public class DWGraph_Algo implements dw_graph_algorithms{
 
     @Override
     public boolean isConnected() {
-        return false;
+        if(graph.nodeSize() <= 1)
+            return true;
+        List<List<node_data>> listComponents = tarjan();
+        return listComponents.size() == 1;
     }
 
     @Override
@@ -163,33 +166,80 @@ public class DWGraph_Algo implements dw_graph_algorithms{
 
 
 
-    private HashMap<Integer,node_data> dfs(node_data startNode)
-    {
-        HashMap<Integer,node_data> mapPath = new HashMap<>();
-        for(node_data n : graph.getV())
+    public static void main(String[] args) {
+        directed_weighted_graph graph = new DWGraph_DS();
+        for(int i = 0; i < 5; i++)
         {
-            n.setInfo("WHITE");
-            mapPath.put(n.getKey(),null);
-            n.setTag(0);
+            node_data node = new NodeData(i);
+            graph.addNode(node);
         }
-        visit(startNode,mapPath);
-        return mapPath;
+        graph.connect(0,1,0);
+        graph.connect(1,0,1);
+        graph.connect(0,2,2);
+        graph.connect(3,0,4);
+        graph.connect(4,3,5);
+        graph.connect(3,4,6);
+        graph.connect(2,1,6);
+        graph.connect(2,1,6);
+        graph.connect(2,4,6);
+
+        DWGraph_Algo algo = new DWGraph_Algo(graph);
+        List<List<node_data>> comp = algo.tarjan();
     }
 
-    private void visit(node_data startNode,HashMap<Integer,node_data> mapPath)
-    {
-        startNode.setInfo("GRAY");
-        for(edge_data ed : graph.getE(startNode.getKey()))
-        {
-            node_data node = graph.getNode(ed.getDest());
-            if(node.getInfo().equals("WHITE"))
-            {
-                node.setInfo("GRAY");
-                mapPath.put(node.getKey(),startNode);
-                visit(node,mapPath);
+    private List<List<node_data>> tarjan() {
+        List<List<node_data>> components = new ArrayList<>();
+
+        Stack<node_data> stack = new Stack<>();
+        int time = 0;
+        for(node_data nodeData : graph.getV()) {
+            nodeData.setTag(0); // lowlink
+            nodeData.setInfo("white"); // set all to not-visited
+        }
+
+        for(node_data nodeData : graph.getV()) {
+            if(nodeData.getInfo().equals("white")) { // not visited
+                dfs(nodeData, time, stack, components);
             }
         }
-        startNode.setInfo("BLACK");
+
+        return components;
+    }
+
+    private void dfs(node_data nodeData, int time, Stack<node_data> stack, List<List<node_data>> components ) {
+        nodeData.setTag(time);
+        time++;
+        nodeData.setInfo("black");
+        stack.add(nodeData);
+        boolean componentRoot = true;
+
+        for(edge_data edge: graph.getE(nodeData.getKey())) {
+            node_data neighbor = graph.getNode(edge.getDest());
+
+            if(neighbor.getInfo().equals("white")) { // not visited
+                dfs(neighbor, time, stack, components);
+            }
+            if(nodeData.getTag() > neighbor.getTag()) {
+                nodeData.setTag(neighbor.getTag());
+                componentRoot = false;
+            }
+        }
+
+        if(componentRoot) {
+            List<node_data> component = new ArrayList<>();
+
+            while(true) {
+                node_data nd = stack.pop();
+                component.add(nd);
+                nd.setTag(Integer.MAX_VALUE);
+
+                if(nd.getKey() == nodeData.getKey()) {
+                    break;
+                }
+            }
+
+            components.add(component);
+        }
     }
 
 

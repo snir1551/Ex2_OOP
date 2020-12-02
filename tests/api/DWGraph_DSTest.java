@@ -157,7 +157,7 @@ class DWGraph_DSTest {
         assertTrue(graph.nodeSize() == 5);
         assertTrue(graph.edgeSize() == 6);
         graph.removeNode(0);
-        assertTrue(graph.nodeSize() == 5);
+        assertTrue(graph.nodeSize() == 4);
         assertTrue(graph.edgeSize() == 2);
         assertNull(graph.getEdge(0,1));
         assertNull(graph.getEdge(1,0));
