@@ -161,4 +161,40 @@ public class DWGraph_Algo implements dw_graph_algorithms{
     }
 
 
+
+
+    private HashMap<Integer,node_data> dfs(node_data startNode)
+    {
+        HashMap<Integer,node_data> mapPath = new HashMap<>();
+        for(node_data n : graph.getV())
+        {
+            n.setInfo("WHITE");
+            mapPath.put(n.getKey(),null);
+            n.setTag(0);
+        }
+        visit(startNode,mapPath);
+        return mapPath;
+    }
+
+    private void visit(node_data startNode,HashMap<Integer,node_data> mapPath)
+    {
+        startNode.setInfo("GRAY");
+        for(edge_data ed : graph.getE(startNode.getKey()))
+        {
+            node_data node = graph.getNode(ed.getDest());
+            if(node.getInfo().equals("WHITE"))
+            {
+                node.setInfo("GRAY");
+                mapPath.put(node.getKey(),startNode);
+                visit(node,mapPath);
+            }
+        }
+        startNode.setInfo("BLACK");
+    }
+
+
+
+
+
+
 }
