@@ -1,18 +1,13 @@
 package gameClient;
 
 
-import gameClient.util.Point3D;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 
 public class MyGamePanel extends JPanel implements MouseListener {
 

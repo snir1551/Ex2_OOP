@@ -1,7 +1,7 @@
 package JsonWrapper;
 
-import api.geo_location;
 
+import api.geo_location;
 
 public class GeoLocationJsonWrapper {
     private final double x;
