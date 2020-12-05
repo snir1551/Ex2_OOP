@@ -5,6 +5,7 @@ import JsonWrapper.EdgeDataJsonWrapper;
 import JsonWrapper.NodeDataJsonWrapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import gameClient.ServerJsonDeserializer;
 import gameClient.util.Point3D;
 
 import java.io.File;
@@ -106,20 +107,17 @@ public class DWGraph_Algo implements dw_graph_algorithms{
     @Override
     public boolean load(String file) {
         try {
-            if(graph != null)
-            {
                 DirectedWeightedGraphJsonWrapper graphJsonWrapper = new Gson().fromJson(new FileReader(new File(file)), DirectedWeightedGraphJsonWrapper.class);
                 graph = new DWGraph_DS(graphJsonWrapper);
                 return true;
-            }
-            else
-                return false;
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
         }
 
     }
+
 
 
 

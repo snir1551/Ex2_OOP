@@ -4,16 +4,19 @@ import JsonWrapper.DirectedWeightedGraphJsonWrapper;
 import JsonWrapper.EdgeDataJsonWrapper;
 import JsonWrapper.NodeDataJsonWrapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import gameClient.ServerJsonDeserializer;
 import gameClient.util.Point3D;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
 public class DWGraph_DS implements directed_weighted_graph{
     private HashMap<Integer,node_data> mapNode; //nodes
-    private HashMap<Integer,HashMap<Integer,edge_data>> mapEdgeOut; //edges "neighbors"
-    private HashMap<Integer,HashMap<Integer,edge_data>> mapEdgeIn; //edges "neighbors"
+    private HashMap<Integer,HashMap<Integer,edge_data>> mapEdgeOut; //edges that out from node
+    private HashMap<Integer,HashMap<Integer,edge_data>> mapEdgeIn; //edges that into node
     private int MC; //num of changes in the graph
     private int edgeSize; // num of edge in the graph
 
@@ -46,6 +49,7 @@ public class DWGraph_DS implements directed_weighted_graph{
 
     public DWGraph_DS(DirectedWeightedGraphJsonWrapper graphJsonWrapper)
     {
+        this();
         for(NodeDataJsonWrapper nodeDataJsonWrapper : graphJsonWrapper.getNodes()) {
             addNode(new NodeData(nodeDataJsonWrapper));
         }
@@ -210,7 +214,37 @@ public class DWGraph_DS implements directed_weighted_graph{
         return MC;
     }
 
-    private boolean hasEdge(int node1,int node2)
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DWGraph_DS that = (DWGraph_DS) o;
+        return MC == that.MC &&
+                edgeSize == that.edgeSize &&
+                Objects.equals(mapNode, that.mapNode) &&
+                Objects.equals(mapEdgeOut, that.mapEdgeOut) &&
+                Objects.equals(mapEdgeIn, that.mapEdgeIn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mapNode, mapEdgeOut, mapEdgeIn, MC, edgeSize);
+    }
+
+    @Override
+    public String toString()
+    {
+        String ans = "Nodes: [\n";
+
+        for(node_data n : getV())
+        {
+            ans += n.toString() + "]\n";
+        }
+        ans += "]";
+        return ans;
+    }
+
+    private boolean hasEdge(int node1, int node2)
     {
         if(mapEdgeOut.get(node1).containsKey(node2))
             return true;
@@ -236,5 +270,7 @@ public class DWGraph_DS implements directed_weighted_graph{
             ++MC;
         }
     }
+
+
 
 }

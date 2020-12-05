@@ -4,11 +4,12 @@ import JsonWrapper.DirectedWeightedGraphJsonWrapper;
 import JsonWrapper.NodeDataJsonWrapper;
 import gameClient.util.Point3D;
 import gameClient.util.Range;
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Node;
 
 import java.util.Objects;
 
-public class NodeData implements node_data{
+public class NodeData implements node_data, Comparable<node_data>{
 
     private int key;
     private Point3D location;
@@ -115,5 +116,23 @@ public class NodeData implements node_data{
     @Override
     public int hashCode() {
         return Objects.hash(key, location, weight, info, tag);
+    }
+
+    @Override
+    public int compareTo(@NotNull node_data o) {
+        if(this.getWeight() > o.getWeight())
+            return 1;
+        else if(this.getWeight() == o.getWeight())
+            return 0;
+        else
+            return -1;
+    }
+
+    @Override
+    public String toString()
+    {
+        String ans = "key = " + getKey() + ", " + "location = [" + getLocation().x() + "," + getLocation().y() + "," + getLocation().z() + "] ";
+        ans += ", weight = " + getWeight() + ", info = " + getInfo() + ", tag = " + getTag();
+        return ans;
     }
 }
