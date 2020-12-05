@@ -2,3 +2,7 @@
 Ex2a.pdf
 out/
 file1
+/bin/
+.project
+.classpath
+.settings
