@@ -12,7 +12,7 @@ import java.io.FileReader;
 
 public class Ex2 {
     public static void main(String[] args) {
-
+        //liron check
         MyGameFrame game = new MyGameFrame();
         game.setVisible(true);
         game_service game1 = Game_Server_Ex2.getServer(4);
