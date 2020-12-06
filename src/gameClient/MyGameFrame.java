@@ -14,6 +14,7 @@ public class MyGameFrame extends JFrame implements ActionListener {
 
     public MyGameFrame()
     {
+        super("MyGame");
         initMyGameFrame();
         createMenuBar();
         initMyGamePanel();

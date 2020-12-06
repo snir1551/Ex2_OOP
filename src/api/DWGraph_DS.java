@@ -22,6 +22,7 @@ public class DWGraph_DS implements directed_weighted_graph{
         MC = 0;
     }
 
+
     public DWGraph_DS(directed_weighted_graph graph)
     {
         this();
@@ -284,6 +285,8 @@ public class DWGraph_DS implements directed_weighted_graph{
             ++MC;
         }
     }
+
+
 
 
 

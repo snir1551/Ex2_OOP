@@ -154,15 +154,17 @@ public class Arena {
 		while(itr.hasNext()) {
 			geo_location p = itr.next().getLocation();
 			if(first) {
-				x0=p.x(); x1=x0;
-				y0=p.y(); y1=y0;
+				x0=p.x();
+				x1=x0;
+				y0=p.y();
+				y1=y0;
 				first = false;
 			}
 			else {
-				if(p.x()<x0) {x0=p.x();}
-				if(p.x()>x1) {x1=p.x();}
-				if(p.y()<y0) {y0=p.y();}
-				if(p.y()>y1) {y1=p.y();}
+				if(p.x()<x0) {x0=p.x();} // min x
+				if(p.x()>x1) {x1=p.x();} // max x
+				if(p.y()<y0) {y0=p.y();} // min y
+				if(p.y()>y1) {y1=p.y();} // max y
 			}
 		}
 		Range xr = new Range(x0,x1);

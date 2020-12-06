@@ -4,9 +4,9 @@ package JsonWrapper;
 import api.geo_location;
 
 public class GeoLocationJsonWrapper {
-    private final double x;
-    private final double y;
-    private final double z;
+    private double x;
+    private double y;
+    private double z;
 
     public GeoLocationJsonWrapper(geo_location location) {
         this.x = location.x();

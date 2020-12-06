@@ -22,6 +22,7 @@ public class NodeData implements node_data, Comparable<node_data>{
         info = null;
         tag = 0;
     }
+    //contructor for tests
     public NodeData(int key,Point3D location,double weight,String info, int tag)
     {
         this.key = key;
@@ -30,6 +31,7 @@ public class NodeData implements node_data, Comparable<node_data>{
         this.info = info;
         this.tag = tag;
     }
+
     public NodeData(int key,Point3D location)
     {
         this.key = key;

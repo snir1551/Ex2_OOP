@@ -47,6 +47,8 @@ public class DWGraph_Algo implements dw_graph_algorithms{
     public double shortestPathDist(int src, int dest) {
         if(graph.getNode(src) == null || graph.getNode(dest) == null) //if one of the nodes not exist return -1
             return -1;
+        if(src == dest)
+            return 0;
         dijkstra(graph.getNode(src)); //start dijkstra algorithm on the (src node)
         if(graph.getNode(dest).getWeight() >= Double.MAX_VALUE)
             return -1;

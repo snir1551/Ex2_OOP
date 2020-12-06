@@ -108,7 +108,6 @@ class NodeDataTest {
     @Test
     void getInfo() {
         Point3D location = new Point3D(1,2,3);
-        Random rand = new Random();
         String info = "";
         for(int i = 0; i<10; i++)
         {
