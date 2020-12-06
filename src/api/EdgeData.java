@@ -40,6 +40,15 @@ public class EdgeData implements edge_data {
         this.tag = edge.getTag();
     }
 
+    public EdgeData(EdgeDataJsonWrapper edge)
+    {
+        this.src = edge.getSrc();
+        this.dest = edge.getDest();
+        this.weight = edge.getWeight();
+        this.info = edge.getInfo();
+        this.tag = edge.getTag();
+    }
+
     /**
      * The id of the source node of this edge.
      * @return src
@@ -119,5 +128,10 @@ public class EdgeData implements edge_data {
     @Override
     public int hashCode() {
         return Objects.hash(src, dest, weight, info, tag);
+    }
+
+    public String toString()
+    {
+        return "src = " + getSrc() + " dest = " + getDest() + " weight = " + getWeight() + " info = " + getInfo() + "tag = " + getTag();
     }
 }

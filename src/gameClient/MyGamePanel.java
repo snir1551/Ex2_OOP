@@ -1,6 +1,11 @@
 package gameClient;
 
 
+import api.*;
+import gameClient.util.Range;
+import gameClient.util.Range2D;
+import kotlin.Pair;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -11,10 +16,15 @@ import java.io.IOException;
 
 public class MyGamePanel extends JPanel implements MouseListener {
 
+    directed_weighted_graph graph;
+    DWGraph_Algo  graph_algo;
+
 
     public MyGamePanel()
     {
-        this.addMouseListener(this);
+        //this.graph = graph;
+        graph_algo = new DWGraph_Algo(graph);
+
     }
 
     @Override
@@ -54,4 +64,8 @@ public class MyGamePanel extends JPanel implements MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
+
+
+
 }

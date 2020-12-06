@@ -10,15 +10,15 @@ import gameClient.util.Point3D;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class ServerJsonDeserializer implements JsonDeserializer<directed_weighted_graph> {
+public class ServerJsonDeserializer implements JsonDeserializer<directed_weighted_graph>{
     @Override
     public directed_weighted_graph deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        JsonObject Nodes = jsonObject.get("Nodes").getAsJsonObject();
+        JsonArray Nodes = jsonObject.get("Nodes").getAsJsonArray();
         directed_weighted_graph graph = new DWGraph_DS();
-        for (Map.Entry<String, JsonElement> set : Nodes.entrySet())
+        for (JsonElement jsonValueElement : Nodes)
         {
-            JsonElement jsonValueElement = set.getValue();
+          //  JsonElement jsonValueElement = set.getValue();
             String pos = jsonValueElement.getAsJsonObject().get("pos").getAsString();
             String[] splitPos = pos.split(",");
             double posX = Double.parseDouble(splitPos[0]);
@@ -28,10 +28,9 @@ public class ServerJsonDeserializer implements JsonDeserializer<directed_weighte
             node_data node = new NodeData(id,new Point3D(posX,posY,posZ));
             graph.addNode(node);
         }
-        JsonObject Edges = jsonObject.get("Edges").getAsJsonObject();
-        for (Map.Entry<String, JsonElement> set : Edges.entrySet())
+        JsonArray Edges = jsonObject.get("Edges").getAsJsonArray();
+        for (JsonElement jsonValueElement : Edges)
         {
-            JsonElement jsonValueElement = set.getValue();
             int src = jsonValueElement.getAsJsonObject().get("src").getAsInt();
             double weight = jsonValueElement.getAsJsonObject().get("w").getAsDouble();
             int dest = jsonValueElement.getAsJsonObject().get("dest").getAsInt();

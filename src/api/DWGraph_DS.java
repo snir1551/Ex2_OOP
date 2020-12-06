@@ -47,8 +47,8 @@ public class DWGraph_DS implements directed_weighted_graph{
             addNode(new NodeData(nodeDataJsonWrapper));
         }
         for (EdgeDataJsonWrapper edgeDataJsonWrapper : graphJsonWrapper.getEdges()) {
-            connect(edgeDataJsonWrapper.getSrc(), edgeDataJsonWrapper.getDest(),
-                    edgeDataJsonWrapper.getWeight());
+            edge_data edge = new EdgeData(edgeDataJsonWrapper);
+            connect(edge);
         }
         MC = graphJsonWrapper.getMc();
     }
@@ -88,8 +88,6 @@ public class DWGraph_DS implements directed_weighted_graph{
         if(!existNode(n.getKey()))
         {
             mapNode.put(n.getKey(),n); //put new node in the dwgraph
-            mapEdgeOut.put(n.getKey(),new HashMap<>());
-            mapEdgeIn.put(n.getKey(),new HashMap<>());
             ++MC;
         }
     }
@@ -129,7 +127,12 @@ public class DWGraph_DS implements directed_weighted_graph{
     @Override
     public Collection<edge_data> getE(int node_id) {
         if(existNode(node_id))
-            return mapEdgeOut.get(node_id).values();
+        {
+            if(mapEdgeOut.containsKey(node_id))
+                return mapEdgeOut.get(node_id).values();
+            else
+                return new HashSet<edge_data>();
+        }
         return null;
     }
 
@@ -233,12 +236,24 @@ public class DWGraph_DS implements directed_weighted_graph{
         {
             ans += n.toString() + "]\n";
         }
-        ans += "]";
+        ans += "]\n";
+        ans += "Edge: [\n";
+        for(node_data n : getV())
+        {
+            for(edge_data e : getE(n.getKey()))
+            {
+                ans += e.toString() + "]\n";
+            }
+
+        }
+
         return ans;
     }
 
     private boolean hasEdge(int node1, int node2)
     {
+        if(!mapEdgeOut.containsKey(node1))
+            return false;
         if(mapEdgeOut.get(node1).containsKey(node2))
             return true;
         else
@@ -254,6 +269,12 @@ public class DWGraph_DS implements directed_weighted_graph{
     {
         if(existNode(edge.getSrc()) && existNode(edge.getDest()) && edge.getWeight() >= 0)
         {
+            if(!mapEdgeOut.containsKey(edge.getSrc()))
+                mapEdgeOut.put(edge.getSrc(),new HashMap<>());
+
+            if(!mapEdgeIn.containsKey(edge.getDest()))
+                mapEdgeIn.put(edge.getDest(),new HashMap<>());
+
             if(!hasEdge(edge.getSrc(),edge.getDest()))
             {
                 ++edgeSize;

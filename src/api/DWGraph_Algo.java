@@ -160,26 +160,26 @@ public class DWGraph_Algo implements dw_graph_algorithms{
 
 
 
-    public static void main(String[] args) {
-        directed_weighted_graph graph = new DWGraph_DS();
-        for(int i = 0; i < 5; i++)
-        {
-            node_data node = new NodeData(i);
-            graph.addNode(node);
-        }
-        graph.connect(0,1,0);
-        graph.connect(1,0,1);
-        graph.connect(0,2,2);
-        graph.connect(3,0,4);
-        graph.connect(4,3,5);
-        graph.connect(3,4,6);
-        graph.connect(2,1,6);
-        graph.connect(2,1,6);
-        graph.connect(2,4,6);
-
-        DWGraph_Algo algo = new DWGraph_Algo(graph);
-        List<List<node_data>> comp = algo.tarjan();
-    }
+//    public static void main(String[] args) {
+//        directed_weighted_graph graph = new DWGraph_DS();
+//        for(int i = 0; i < 5; i++)
+//        {
+//            node_data node = new NodeData(i);
+//            graph.addNode(node);
+//        }
+//        graph.connect(0,1,0);
+//        graph.connect(1,0,1);
+//        graph.connect(0,2,2);
+//        graph.connect(3,0,4);
+//        graph.connect(4,3,5);
+//        graph.connect(3,4,6);
+//        graph.connect(2,1,6);
+//        graph.connect(2,1,6);
+//        graph.connect(2,4,6);
+//
+//        DWGraph_Algo algo = new DWGraph_Algo(graph);
+//        List<List<node_data>> comp = algo.tarjan();
+//    }
 
     private List<List<node_data>> tarjan() {
         List<List<node_data>> components = new ArrayList<>();
@@ -235,10 +235,6 @@ public class DWGraph_Algo implements dw_graph_algorithms{
             components.add(component);
         }
     }
-
-
-
-
 
 
 }
