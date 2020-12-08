@@ -1,5 +1,7 @@
 package gameClient;
 
+import api.game_service;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,10 +13,11 @@ public class MyGameFrame extends JFrame implements ActionListener {
 
 
     private ArrayList<JMenuItem> menuItems;
-
-    public MyGameFrame()
+    private Arena arena;
+    public MyGameFrame(Arena arena)
     {
         super("MyGame");
+        this.arena = arena;
         initMyGameFrame();
         createMenuBar();
         initMyGamePanel();
@@ -27,13 +30,13 @@ public class MyGameFrame extends JFrame implements ActionListener {
 
     private void initMyGameFrame()
     {
-        this.setSize(500,500);
+        this.setSize(1000, 700);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void initMyGamePanel()
     {
-        MyGamePanel myPanel = new MyGamePanel();
+        MyGamePanel myPanel = new MyGamePanel(arena);
         this.add(myPanel);
     }
 

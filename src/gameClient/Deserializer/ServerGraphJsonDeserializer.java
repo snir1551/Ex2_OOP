@@ -1,4 +1,4 @@
-package gameClient;
+package gameClient.Deserializer;
 
 import api.DWGraph_DS;
 import api.NodeData;
@@ -10,7 +10,7 @@ import gameClient.util.Point3D;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class ServerJsonDeserializer implements JsonDeserializer<directed_weighted_graph>{
+public class ServerGraphJsonDeserializer implements JsonDeserializer<directed_weighted_graph> {
     @Override
     public directed_weighted_graph deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
