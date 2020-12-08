@@ -24,6 +24,7 @@ public class MyGamePanel extends JPanel {
 
     private directed_weighted_graph graph;
     private ArrayList<Pokemon> pokemon;
+    private gameClient.util.Range2Range _w2f;
     private Arena arena;
 
     /**
@@ -32,6 +33,7 @@ public class MyGamePanel extends JPanel {
      */
     public MyGamePanel(Arena arena)
     {
+
         this.arena = arena;
     }
 
@@ -102,18 +104,25 @@ public class MyGamePanel extends JPanel {
         System.out.println(maxY);
         System.out.println(minY);
         int r = 5;
+        double distY = maxY - minY;
+        double distX = maxX - minX;
+
         for(Pokemon p : pokemon)
         {
-
+            Range rangeX = new Range(minX,maxX);
+            Range rangeY = new Range(minY,maxY);
+            Range2D world = new Range2D(rangeX,rangeY);
+            double pppx =  scale1(p.getLocation().x(),minX,maxX);
+            double pppy =  scale1(p.getLocation().x(),minX,maxX);
+            Range rx = new Range(20*pppx,this.getWidth()-20);
+            Range ry = new Range(this.getHeight()-10,150);
+            Range2D frame = new Range2D(rx,ry);
+            Range2Range rangeto = new Range2Range(world,frame);
+            geo_location fp = rangeto.world2frame(p.getLocation());
             g.setColor(Color.green);
-            double x = scale(p.getLocation().x(),minX,maxX,20,this.getWidth()-20);
-            double y = scale(p.getLocation().y(),minY,maxY,this.getHeight()-10,150);
-            g.fillOval((int)x - r, (int)y - r, 2*r, 2*r);
+
+            g.fillOval((int)fp.x(), (int)fp.y(), (int)r*2, (int)r*2);
             System.out.println("B");
-
-
-
-
         }
     }
 
@@ -122,6 +131,19 @@ public class MyGamePanel extends JPanel {
         double res = ((data - r_min) / (r_max-r_min)) * (t_max - t_min) + t_min;
         return res;
     }
+
+    private double scale1(double data, double r_min, double r_max)
+    {
+        double res = ((data - r_min) / (r_max-r_min));
+        return res;
+    }
+    private double scale2(double data, double t_min, double t_max)
+    {
+        double res = data*(t_max - t_min) + t_min;
+        return res;
+    }
+
+
 
 
 }

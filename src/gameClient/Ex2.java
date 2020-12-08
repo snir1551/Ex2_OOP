@@ -16,7 +16,7 @@ public class Ex2 {
 
     public static void main(String[] args)
     {
-        game_service game = Game_Server_Ex2.getServer(2);
+        game_service game = Game_Server_Ex2.getServer(1);
         directed_weighted_graph graph = deserializeGraph(game);
         ArrayList<Pokemon>  p = deserializePokemon(game);
         Arena arena = new Arena();
