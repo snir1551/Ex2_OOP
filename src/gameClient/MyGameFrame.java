@@ -13,11 +13,10 @@ public class MyGameFrame extends JFrame implements ActionListener {
 
 
     private ArrayList<JMenuItem> menuItems;
-    private Arena arena;
-    public MyGameFrame(Arena arena)
+    MyGamePanel myPanel;
+    public MyGameFrame()
     {
         super("MyGame");
-        this.arena = arena;
         initMyGameFrame();
         createMenuBar();
         initMyGamePanel();
@@ -28,6 +27,11 @@ public class MyGameFrame extends JFrame implements ActionListener {
 
     }
 
+    public void update(Arena arena) {
+        myPanel.update(arena);
+    }
+
+
     private void initMyGameFrame()
     {
         this.setSize(1000, 700);
@@ -36,7 +40,7 @@ public class MyGameFrame extends JFrame implements ActionListener {
 
     private void initMyGamePanel()
     {
-        MyGamePanel myPanel = new MyGamePanel(arena);
+        myPanel = new MyGamePanel();
         this.add(myPanel);
     }
 

@@ -18,63 +18,11 @@ public class Arena {
     private ArrayList<Pokemon> pokemons;
     private ArrayList<Agent> agents;
 
-    public Arena()
-    {
-        graph = new DWGraph_DS();
-        pokemons = new ArrayList<>();
-    }
 
-
-    public double minXPokemon()
-    {
-        double minX = Double.MAX_VALUE;
-        for(Pokemon p : pokemons)
-        {
-            if(p.getLocation().x() < minX)
-            {
-                minX = p.getLocation().x();
-            }
-        }
-        return minX;
-    }
-
-    public double maxXPokemon()
-    {
-        double maxX = Double.MIN_VALUE;
-        for(Pokemon p : pokemons)
-        {
-            if(p.getLocation().x() > maxX)
-            {
-                maxX = p.getLocation().x();
-            }
-        }
-        return maxX;
-    }
-
-    public double minYPokemon()
-    {
-        double minY = Double.MAX_VALUE;
-        for(Pokemon p : pokemons)
-        {
-            if(p.getLocation().y() < minY)
-            {
-                minY = p.getLocation().y();
-            }
-        }
-        return minY;
-    }
-
-    public double maxYPokemon()
-    {
-        double maxY = Double.MIN_VALUE;
-        for(Pokemon p : pokemons)
-        {
-            if(p.getLocation().y() > maxY)
-            {
-                maxY = p.getLocation().y();
-            }
-        }
-        return maxY;
+    public Arena(directed_weighted_graph graph, ArrayList<Pokemon> pokemons, ArrayList<Agent> agents) {
+        this.graph = graph;
+        this.pokemons = pokemons;
+        this.agents = agents;
     }
 
     public void setGraph(directed_weighted_graph graph)
@@ -88,11 +36,20 @@ public class Arena {
 
     public void setPokemons(ArrayList<Pokemon>  p)
     {
-        this.pokemons = new ArrayList<>(p);
+        this.pokemons = p;
     }
     public ArrayList<Pokemon> getPokemons()
     {
         return pokemons;
+    }
+
+    public void setAgents(ArrayList<Agent>  a)
+    {
+        this.agents = a;
+    }
+    public ArrayList<Agent> getAgents()
+    {
+        return agents;
     }
 
 
