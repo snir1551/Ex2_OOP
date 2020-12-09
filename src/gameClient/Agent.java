@@ -10,7 +10,7 @@ public class Agent {
     private int dest;
     private double speed;
     private Point3D location;
-
+    private static int counter;
     public Agent(int id, double value, int src, int dest, double speed, Point3D location)
     {
         this.id = id;
@@ -19,6 +19,7 @@ public class Agent {
         this.dest = dest;
         this.speed = speed;
         this.location = new Point3D(location);
+        ++counter;
     }
 
     public int getId() {

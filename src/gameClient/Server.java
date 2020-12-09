@@ -1,5 +1,8 @@
 package gameClient;
 
+import api.game_service;
+import Server.Game_Server_Ex2;
+
 public class Server {
     private int pokemons;
     private boolean is_logged_in;
@@ -10,7 +13,9 @@ public class Server {
     private int id;
     private String graph;
     private int agents;
-
+    private game_service game;
+    private int lvl;
+    private static int counter;
 
     public Server(int pokemons, boolean is_logged_in, int moves, int grade,int game_level, int max_user_level, int id, String graph, int agents)
     {
@@ -24,6 +29,12 @@ public class Server {
         this.graph = graph;
         this.agents = agents;
     }
+
+    public Server()
+    {
+
+    }
+
 
     public int getPokemons() {
         return pokemons;
@@ -60,4 +71,24 @@ public class Server {
     public int getAgents() {
         return agents;
     }
+
+
+    public game_service Game(int lvl) {
+        this.lvl = lvl;
+        game = Game_Server_Ex2.getServer(lvl);
+        counter = 0;
+        return game;
+    }
+
+    public void addAgent(int nodePosition)
+    {
+        game.addAgent(nodePosition);
+        ++counter;
+    }
+
+    public int getCounter()
+    {
+        return Server.counter;
+    }
+
 }

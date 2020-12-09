@@ -10,7 +10,6 @@ import java.util.ArrayList;
 public class ServerAgentJsonDeserailizer implements JsonDeserializer<ArrayList<Agent>> {
     @Override
     public ArrayList<Agent> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        System.out.println("a");
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         JsonArray Agents = jsonObject.get("Agents").getAsJsonArray();
         ArrayList<Agent> arrayAgent = new ArrayList<>();

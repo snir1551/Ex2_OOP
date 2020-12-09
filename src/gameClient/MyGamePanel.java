@@ -28,7 +28,6 @@ public class MyGamePanel extends JPanel {
     private Arena arena;
     private node_location location;
 
-
     /**
      * Constructor
      */
@@ -36,6 +35,7 @@ public class MyGamePanel extends JPanel {
     public void update(Arena arena) {
         this.arena = arena;
         graph = new DWGraph_DS(arena.getGraph());
+        //agent = arena.getAgents();
         location = new NodeLocation(graph);
     }
 
@@ -61,6 +61,7 @@ public class MyGamePanel extends JPanel {
     {
 
         g.setColor(Color.blue);
+        //ArrayList<Double> arrayLocation = arena.WorldToFrame();
         double maxX = location.getMaxXNodeData().getLocation().x();
         double minX = location.getMinXNodeData().getLocation().x();
         double maxY = location.getMaxYNodeData().getLocation().y();
@@ -116,6 +117,10 @@ public class MyGamePanel extends JPanel {
     private void drawAgent(Graphics g)
     {
         agent = arena.getAgents();
+        if(agent == null)
+        {
+            return;
+        }
         double maxX = location.getMaxXNodeData().getLocation().x();
         double minX = location.getMinXNodeData().getLocation().x();
         double maxY = location.getMaxYNodeData().getLocation().y();
@@ -136,7 +141,6 @@ public class MyGamePanel extends JPanel {
         double res = ((data - r_min) / (r_max-r_min)) * (t_max - t_min) + t_min;
         return res;
     }
-
 
 
 
