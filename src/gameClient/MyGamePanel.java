@@ -25,6 +25,7 @@ public class MyGamePanel extends JPanel {
     private directed_weighted_graph graph;
     private ArrayList<Pokemon> pokemon;
     private ArrayList<Agent> agent;
+    private Server server;
     private Arena arena;
     private node_location location;
 
@@ -51,6 +52,9 @@ public class MyGamePanel extends JPanel {
             drawGraph(g);
             drawPokemons(g);
             drawAgent(g);
+            drawGrade(g);
+            drawMoves(g);
+            //drawClock(g);
         }
     }
 
@@ -89,6 +93,7 @@ public class MyGamePanel extends JPanel {
                 double xx = scale(destination.getLocation().x(),minX,maxX,20,this.getWidth()-20);
                 double yy = scale(destination.getLocation().y(),minY,maxY,this.getHeight()-10,150);
                 g.drawLine((int)x,(int)y,(int)xx,(int)yy);
+                g.drawString(""+e.getWeight(), (int)x-20, (int)y- 20);
             }
         }
 
@@ -136,11 +141,44 @@ public class MyGamePanel extends JPanel {
 
     }
 
+
+    private void drawGrade(Graphics g)
+    {
+        server = arena.getServer();
+        g.setColor(Color.blue);
+        int r = 5;
+        g.drawString( "Grade: "+String.valueOf(server.getGrade()),(int)20,(int)50);
+    }
+
+    private void drawMoves(Graphics g)
+    {
+        server = arena.getServer();
+        g.setColor(Color.blue);
+        int r = 5;
+        g.drawString( "Moves: "+String.valueOf(server.getMoves()),(int)100,(int)50);
+    }
+
+//    private void drawClock(Graphics g)
+//    {
+//        server = arena.getServer();
+//        g.setColor(Color.blue);
+//        int r = 5;
+//        int i = 1;
+//        while(server.Game(server.getGame_level()).isRunning())
+//        {
+//                System.out.println("a");
+//                g.drawString( "Time: " + String.valueOf(i),(int)50,(int)20);
+//        }
+//
+//
+//    }
+
     private double scale(double data, double r_min, double r_max, double t_min, double t_max)
     {
         double res = ((data - r_min) / (r_max-r_min)) * (t_max - t_min) + t_min;
         return res;
     }
+
 
 
 

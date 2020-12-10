@@ -72,6 +72,11 @@ public class Server {
         return agents;
     }
 
+    public game_service getGame()
+    {
+        return game;
+    }
+
 
     public game_service Game(int lvl) {
         this.lvl = lvl;
@@ -79,6 +84,7 @@ public class Server {
         counter = 0;
         return game;
     }
+
 
     public void addAgent(int nodePosition)
     {
