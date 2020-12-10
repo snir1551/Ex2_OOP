@@ -93,7 +93,7 @@ public class MyGamePanel extends JPanel {
                 double xx = scale(destination.getLocation().x(),minX,maxX,20,this.getWidth()-20);
                 double yy = scale(destination.getLocation().y(),minY,maxY,this.getHeight()-10,150);
                 g.drawLine((int)x,(int)y,(int)xx,(int)yy);
-                g.drawString(""+e.getWeight(), (int)x-20, (int)y- 20);
+                //g.drawString(""+e.getWeight(), (int)x-20, (int)y- 20);
             }
         }
 

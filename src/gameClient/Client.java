@@ -23,58 +23,6 @@ public class Client implements Runnable {
 
     }
 
-//    public directed_weighted_graph deserializeGraph(game_service game)
-//    {
-//
-//        GsonBuilder builder = new GsonBuilder();
-//        builder.registerTypeAdapter(DWGraph_DS.class, new ServerGraphJsonDeserializer());
-//        Gson gson = builder.create();
-//
-//
-//        directed_weighted_graph graph = gson.fromJson(game.getGraph(), DWGraph_DS.class);
-//        return graph;
-//
-//    }
-//
-//    public ArrayList<Pokemon> deserializePokemon(game_service game)
-//    {
-//
-//        GsonBuilder builder = new GsonBuilder();
-//        builder.registerTypeAdapter(ArrayList.class, new ServerPokemonJsonDeserializer());
-//        Gson gson = builder.create();
-//
-//
-//        ArrayList<Pokemon> pokemons = gson.fromJson(game.getPokemons(), ArrayList.class);
-//        return pokemons;
-//
-//    }
-//
-//    public Server deserializeServer(game_service game)
-//    {
-//
-//        GsonBuilder builder = new GsonBuilder();
-//        builder.registerTypeAdapter(Server.class, new ServerDeserializer());
-//        Gson gson = builder.create();
-//
-//
-//        Server server = gson.fromJson(game.toString(), Server.class);
-//        System.out.println(server.getAgents());
-//        return server;
-//
-//    }
-//
-//    public ArrayList<Agent> deserializeAgent(game_service game)
-//    {
-//
-//        GsonBuilder builder = new GsonBuilder();
-//        builder.registerTypeAdapter(ArrayList.class, new ServerAgentJsonDeserailizer());
-//        Gson gson = builder.create();
-//
-//        System.out.println(game.getAgents());
-//        ArrayList<Agent> agents = gson.fromJson(game.getAgents(), ArrayList.class);
-//        return agents;
-//
-//    }
 
     @Override
     public void run() {
@@ -122,12 +70,16 @@ public class Client implements Runnable {
                         updateEdge(d,arena.getGraph());
                     }
                     p = arena.getPokemons().get(0);
+//                    for(node_data n : arena.getGraph().getV())
+//                    {
+//                        System.out.println(n);
+//                    }
                     //System.out.println(p);
                     //System.out.println(p.get_edge().getSrc());
                     list = shortestPath(j,p.get_edge().getDest());
-                    System.out.println(++f);
+                    //System.out.println(p.get_edge().getDest());
                     size = list.size();
-                    i=1;
+                    i=0;
                 }
 
             }
@@ -170,8 +122,8 @@ public class Client implements Runnable {
     public void updateEdge(Pokemon fr, directed_weighted_graph g) {
         //	oop_edge_data ans = null;
 
-       for(node_data n : arena.getGraph().getV())
-       {
+        for(node_data n : arena.getGraph().getV())
+        {
 
             for(edge_data e : arena.getGraph().getE(n.getKey()))
             {
@@ -189,7 +141,7 @@ public class Client implements Runnable {
                     {
                         if(e.getSrc() > e.getDest())
                             arena.getGraph().getNode(e.getSrc()).setTag(1);
-                            arena.getGraph().getNode(e.getDest()).setTag(-1);
+                        arena.getGraph().getNode(e.getDest()).setTag(-1);
                     }
                 }
 //                else
@@ -256,7 +208,7 @@ public class Client implements Runnable {
         HashMap<Integer,node_data> mapPath = new HashMap<>(); //init HashMap of key: Integer , value: node_info
         for(node_data ni : arena.getGraph().getV()) //We go through all the vertices
         {
-            ni.setTag(0);
+            //ni.setTag(0);
             ni.setWeight(Double.MAX_VALUE); //set their tag to Max_Value
             ni.setInfo("WHITE"); //  set their info to WHITE
             mapPath.put(ni.getKey(),null); //put in our HashMap (father path)  - key: key of the node , value: null
@@ -272,18 +224,18 @@ public class Client implements Runnable {
             {
                 node_data ni = arena.getGraph().getNode(edge.getDest());
                 //if(node.getTag() != -1) {
-                    if (ni.getInfo().equals("WHITE")) //if he is WHITE We never went through it
-                    {
-                        if (n.getWeight() < Double.MAX_VALUE) { //if tag smallest than MAX_VALUE
-                            double t = n.getWeight() + edge.getWeight();
-                            if (ni.getWeight() > t) { //if the tag of the neighbor bigger than new path tag so update the neighbor tag
-                                ni.setWeight(t); //neighbor tag to be t
-                                mapPath.put(ni.getKey(), n); //update the father path
-                                queue.remove(ni);//decreaseKey - we're removing the node and add him back
-                                queue.add(ni);
-                            }
+                if (ni.getInfo().equals("WHITE")) //if he is WHITE We never went through it
+                {
+                    if (n.getWeight() < Double.MAX_VALUE) { //if tag smallest than MAX_VALUE
+                        double t = n.getWeight() + edge.getWeight();
+                        if (ni.getWeight() > t) { //if the tag of the neighbor bigger than new path tag so update the neighbor tag
+                            ni.setWeight(t); //neighbor tag to be t
+                            mapPath.put(ni.getKey(), n); //update the father path
+                            queue.remove(ni);//decreaseKey - we're removing the node and add him back
+                            queue.add(ni);
                         }
                     }
+                }
                 //}
             }
             n.setInfo("BLACK"); //we finish with the node set info to BLACK
@@ -317,95 +269,49 @@ public class Client implements Runnable {
             list.addFirst(arena.getGraph().getNode(t.getKey())); // add the t to list
             t = pv.get(t.getKey()); // t = next node
         }
-        node_data n = list.get(list.size()-1);
-        for(edge_data e : arena.getGraph().getE(n.getKey()))
+        for(node_data d : arena.getGraph().getV())
         {
-            node_data nodeDest = arena.getGraph().getNode(e.getDest());
-            node_data nodeSrc = arena.getGraph().getNode(e.getSrc());
-            if(nodeDest.getTag() == -1)
-            {
-                list.add(arena.getGraph().getNode(e.getSrc()));
-                nodeDest.setTag(0);
-                nodeSrc.setTag(0);
-                break;
-            }
+            System.out.println(d);
         }
-        return list;
-    }
-
-//    public HashMap<Integer,node_data> BFS(node_data n) // O(|V|+|E|)
-//    {
-//        HashMap<Integer,node_data> bfsMap = new HashMap<>();
-//        for(node_data node : arena.getGraph().getV())
-//        {
-//            node.setInfo("WHITE"); // all nodes WHITE
-//            node.setWeight(Integer.MAX_VALUE); // all nodes MAX_VALUE
-//            bfsMap.put(node.getKey(),null);
-//        }
-//        n.setInfo("Gray");
-//        n.setWeight(0);
-//        Queue<node_data> q = new LinkedList<>();
-//        q.add(n);
-//
-//        while(!q.isEmpty())
-//        {
-//            node_data newNode = q.remove();
-//            for(edge_data edge : arena.getGraph().getE(newNode.getKey()))
-//            {
-//                node_data node = arena.getGraph().getNode(edge.getDest());
-//                if(node.getTag() != -1)
-//                {
-//                    if(node.getInfo().equals("WHITE"))
-//                    {
-//                        node.setInfo("GRAY");
-//                        node.setWeight(newNode.getWeight() + 1);
-//                        q.add(node);
-//                        bfsMap.put(node.getKey(),newNode);
-//                    }
-//                }
-//            }
-//            newNode.setInfo("BLACK");
-//        }
-//        return bfsMap;
-//    }
-
-//    public List<node_data> shortestPath(int src, int dest) {
-//        LinkedList<node_data> list = new LinkedList<>();
-//        if(arena.getGraph().getNode(src) == null || arena.getGraph().getNode(dest) == null)
-//        {
-//            return null;
-//        }
-//        HashMap<Integer,node_data> pv = BFS(this.arena.getGraph().getNode(src));
-//        if(arena.getGraph().getNode(dest).getWeight() == Integer.MAX_VALUE)
-//        {
-//            return null;
-//        }
-//
-//        list.addFirst(arena.getGraph().getNode(dest));
-//        node_data t = pv.get(dest);
-//
-//        while(t != null)
-//        {
-//            list.addFirst(arena.getGraph().getNode(t.getKey()));
-//            t = pv.get(t.getKey());
-//        }
-//
 //        node_data n = list.get(list.size()-1);
 //        for(edge_data e : arena.getGraph().getE(n.getKey()))
 //        {
 //            node_data nodeDest = arena.getGraph().getNode(e.getDest());
 //            node_data nodeSrc = arena.getGraph().getNode(e.getSrc());
-//            if(nodeDest.getTag() == -1)
+//            System.out.println("nodeDest : " + nodeDest.getKey() + " " + nodeDest.getTag());
+//            System.out.println("nodeSrc : " + nodeSrc.getKey() + " " + nodeSrc.getTag());
+//            if(nodeSrc.getTag() == -1)
 //            {
-//                list.add(arena.getGraph().getNode(e.getDest()));
+//                int d = nodeDest.getKey();
+//                list.add(arena.getGraph().getNode(d));
 //                nodeDest.setTag(0);
 //                nodeSrc.setTag(0);
 //                break;
 //            }
-//        }
 //
-//        return list;
-//    }
+//        }
+        if(list.get(list.size()-1).getTag() == -1 && arena.getPokemons().get(0).get_edge().getDest() == list.get(list.size()-1).getKey() )
+        {
+            for(node_data n : arena.getGraph().getV())
+            {
+                if(n.getTag() == 1)
+                {
+                    list.add(n);
+                }
+            }
+            for(node_data n : arena.getGraph().getV())
+            {
+                if(n.getTag() == -1)
+                {
+                    list.add(n);
+                }
+            }
+        }
+
+        return list;
+    }
+
+
 
     private int keyCloseAgent(Pokemon p)
     {
