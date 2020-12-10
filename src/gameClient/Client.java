@@ -83,7 +83,6 @@ public class Client implements Runnable {
         arena = new Arena(game);
         mygame = new MyGameFrame();
         mygame.setVisible(true);
-        dw_graph_algorithms graph_algo = new DWGraph_Algo(arena.getGraph());
 
 
         for(Pokemon p : arena.getPokemons())
@@ -101,9 +100,9 @@ public class Client implements Runnable {
         List<node_data> list = shortestPath(key,p.get_edge().getSrc());
         game.startGame();
         update();
-        System.out.println(game.getPokemons());
         int size = list.size();
         int i = 1;
+        int j = -1;
         while(game.isRunning())
         {
             game.move();
@@ -114,19 +113,30 @@ public class Client implements Runnable {
                 if(i<size)
                 {
                     game.chooseNextEdge(0, list.get(i).getKey());
+                    j = list.get(i).getKey();
                     i++;
                 }
-                if(i == size)
+                if(i==size)
                 {
-                    game.chooseNextEdge(0, p.get_edge().getDest());
-                    int keyy = p.get_edge().getDest();
-                    p = arena.getPokemons().get(0);
                     update();
-                    list = shortestPath(keyy,p.get_edge().getSrc());
+                    for(Pokemon d : arena.getPokemons())
+                    {
+                        updateEdge(d,arena.getGraph());
+                    }
+                    try {
+                        if(ind%1==0) {mygame.repaint();}
+                        Thread.sleep(dt);
+                        ind++;
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                    p = arena.getPokemons().get(0);
+                    System.out.println(p.get_edge().getSrc());
+                    list = shortestPath(j,p.get_edge().getSrc());
                     i=1;
-                    game.chooseNextEdge(0, list.get(i).getKey());
-                    System.out.println(game.getPokemons());
                 }
+
 
             }
 
@@ -248,7 +258,6 @@ public class Client implements Runnable {
         HashMap<Integer,node_data> bfsMap = new HashMap<>();
         for(node_data node : arena.getGraph().getV())
         {
-            node.setTag(0);
             node.setInfo("WHITE"); // all nodes WHITE
             node.setWeight(Integer.MAX_VALUE); // all nodes MAX_VALUE
             bfsMap.put(node.getKey(),null);
@@ -286,11 +295,6 @@ public class Client implements Runnable {
         {
             return null;
         }
-        if(src == dest)
-        {
-            list.add(arena.getGraph().getNode(src));
-            return list;
-        }
         HashMap<Integer,node_data> pv = BFS(this.arena.getGraph().getNode(src));
         if(arena.getGraph().getNode(dest).getWeight() == Integer.MAX_VALUE)
         {
@@ -305,6 +309,19 @@ public class Client implements Runnable {
             list.addFirst(arena.getGraph().getNode(t.getKey()));
             t = pv.get(t.getKey());
         }
+        System.out.println(list.size());
+        node_data n = list.get(list.size()-1);
+        for(edge_data e : arena.getGraph().getE(n.getKey()))
+        {
+            node_data node = arena.getGraph().getNode(e.getDest());
+            if(node.getTag() == -1)
+            {
+                list.add(arena.getGraph().getNode(e.getDest()));
+                node.setTag(0);
+                break;
+            }
+        }
+        System.out.println(list.size());
         return list;
     }
 
