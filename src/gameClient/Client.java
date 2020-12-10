@@ -27,7 +27,7 @@ public class Client implements Runnable {
     @Override
     public void run() {
         server = new Server();
-        game = server.Game(0);
+        game = server.Game(1);
         arena = new Arena(game);
         mygame = new MyGameFrame();
         mygame.setVisible(true);
@@ -41,7 +41,7 @@ public class Client implements Runnable {
         Pokemon p = arena.getPokemons().get(0);
         int key = keyCloseAgent(p);
         server.addAgent(key);
-        List<node_data> list = shortestPath(key,p.get_edge().getDest());
+        List<node_data> list = shortestPath(key,p.get_edge().getSrc());
         game.startGame();
         update();
         int size = list.size();
@@ -76,7 +76,7 @@ public class Client implements Runnable {
 //                    }
                     //System.out.println(p);
                     //System.out.println(p.get_edge().getSrc());
-                    list = shortestPath(j,p.get_edge().getDest());
+                    list = shortestPath(j,p.get_edge().getSrc());
                     //System.out.println(p.get_edge().getDest());
                     size = list.size();
                     i=0;
@@ -250,11 +250,11 @@ public class Client implements Runnable {
         {
             return null;
         }
-        if(src == dest) //if src equal to dest
-        {
-            list.add(arena.getGraph().getNode(src)); //add src to list
-            return list; //return list
-        }
+//        if(src == dest) //if src equal to dest
+//        {
+//            list.add(arena.getGraph().getNode(src)); //add src to list
+//            return list; //return list
+//        }
         HashMap<Integer,node_data> pv = dijkstra(this.arena.getGraph().getNode(src));//start dijkstra on src and return hashmap that contain the path fathers
         if(arena.getGraph().getNode(dest).getInfo().equals("WHITE")) //if the dest is WHITE so we didnt move on him so return null
         {
@@ -290,15 +290,7 @@ public class Client implements Runnable {
 //            }
 //
 //        }
-        if(list.get(list.size()-1).getTag() == -1 && arena.getPokemons().get(0).get_edge().getDest() == list.get(list.size()-1).getKey() )
-        {
-            for(node_data n : arena.getGraph().getV())
-            {
-                if(n.getTag() == 1)
-                {
-                    list.add(n);
-                }
-            }
+        
             for(node_data n : arena.getGraph().getV())
             {
                 if(n.getTag() == -1)
@@ -306,7 +298,7 @@ public class Client implements Runnable {
                     list.add(n);
                 }
             }
-        }
+        
 
         return list;
     }
