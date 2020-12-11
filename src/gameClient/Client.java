@@ -8,6 +8,7 @@ import gameClient.Deserializer.ServerDeserializer;
 import gameClient.Deserializer.ServerGraphJsonDeserializer;
 import gameClient.Deserializer.ServerPokemonJsonDeserializer;
 import Server.Game_Server_Ex2;
+import kotlin.Pair;
 import kotlin.jvm.Synchronized;
 
 import java.util.*;
@@ -27,25 +28,26 @@ public class Client implements Runnable {
     @Override
     public void run() {
         server = new Server();
-        game = server.Game(1);
+        game = server.Game(23);
         arena = new Arena(game);
         mygame = new MyGameFrame();
         mygame.setVisible(true);
-
-
+        System.out.println(game);
         for(Pokemon p : arena.getPokemons())
         {
             updateEdge(p,arena.getGraph());
         }
 
-        Pokemon p = arena.getPokemons().get(0);
-        int key = keyCloseAgent(p);
-        server.addAgent(key);
-        List<node_data> list = shortestPath(key,p.get_edge().getSrc());
+        Pair<Integer,Pokemon> PairLocation = locatedAgent();
+        server.addAgent(0);
+        server.addAgent(0);
+        update();
+        List<Agent> arrayAgent = getAgentsSorted(arena.getAgents());
+        System.out.println(arrayAgent.toString());
+        List<node_data> list = shortestPath(PairLocation.getFirst(),PairLocation.getSecond().get_edge().getSrc(),PairLocation.getSecond());
         game.startGame();
         update();
         int size = list.size();
-        int f = 0;
         int i = 0;
         int j = 0;
         while(game.isRunning())
@@ -63,21 +65,14 @@ public class Client implements Runnable {
                 }
                 else
                 {
-                    //System.out.println(p);
+
                     update();
                     for(Pokemon d : arena.getPokemons())
                     {
                         updateEdge(d,arena.getGraph());
                     }
-                    p = arena.getPokemons().get(0);
-//                    for(node_data n : arena.getGraph().getV())
-//                    {
-//                        System.out.println(n);
-//                    }
-                    //System.out.println(p);
-                    //System.out.println(p.get_edge().getSrc());
-                    list = shortestPath(j,p.get_edge().getSrc());
-                    //System.out.println(p.get_edge().getDest());
+                    PairLocation = locatedAgent();
+                    list = shortestPath(j,PairLocation.getSecond().get_edge().getSrc(),PairLocation.getSecond());
                     size = list.size();
                     i=0;
                 }
@@ -244,7 +239,7 @@ public class Client implements Runnable {
 
     }
 
-    public List<node_data> shortestPath(int src, int dest) {
+    public List<node_data> shortestPath(int src, int dest, Pokemon p) {
         LinkedList<node_data> list = new LinkedList<>(); //list of the path from src to dest
         if(arena.getGraph().getNode(src) == null || arena.getGraph().getNode(dest) == null) // if src or dest not exist return null
         {
@@ -269,10 +264,7 @@ public class Client implements Runnable {
             list.addFirst(arena.getGraph().getNode(t.getKey())); // add the t to list
             t = pv.get(t.getKey()); // t = next node
         }
-        for(node_data d : arena.getGraph().getV())
-        {
-            System.out.println(d);
-        }
+
 //        node_data n = list.get(list.size()-1);
 //        for(edge_data e : arena.getGraph().getE(n.getKey()))
 //        {
@@ -291,15 +283,23 @@ public class Client implements Runnable {
 //
 //        }
         
+//            for(node_data n : arena.getGraph().getV())
+//            {
+//                if(n.getTag() == -1)
+//                {
+//                    list.add(n);
+//                }
+//            }
+//
             for(node_data n : arena.getGraph().getV())
             {
-                if(n.getTag() == -1)
+                if(n.getKey() == p.get_edge().getDest())
                 {
                     list.add(n);
                 }
             }
-        
 
+        System.out.println(list.toString());
         return list;
     }
 
@@ -324,5 +324,66 @@ public class Client implements Runnable {
         }
         return key;
     }
+
+    private Pair<Integer,Pokemon> locatedAgent()
+    {
+        double max = Double.MIN_VALUE;
+        int countPokemon = arena.getPokemons().size();
+        int key = -1;
+        Pokemon position = null;
+
+        for(Pokemon p : arena.getPokemons())
+        {
+            if(max < p.getValue())
+            {
+                max = p.getValue();
+                key = keyCloseAgent(p);
+                position = p;
+            }
+        }
+        server.addAgent(key);
+        return new Pair<>(key,position);
+    }
+
+
+    private List<Pokemon> getPokemonsSorted(List<Pokemon> pokemon) {
+        List<Pokemon> pokemonList = arena.getPokemons();
+
+        Collections.sort(pokemonList, new Comparator<Pokemon>() {
+            @Override
+            public int compare(Pokemon f1, Pokemon f2) {
+                if(f1.getValue() > f2.getValue()) {
+                    return -1;
+                } else if(f1.getValue() < f2.getValue()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        return pokemonList;
+    }
+
+
+    private List<Agent> getAgentsSorted(List<Agent> agent) {
+        List<Agent> agentList = arena.getAgents();
+
+        Collections.sort(agentList, new Comparator<Agent>() {
+            @Override
+            public int compare(Agent r1, Agent r2) {
+                if(r1.getSpeed() > r2.getSpeed()) {
+                    return -1;
+                } else if(r1.getSpeed() < r2.getSpeed()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        return agentList;
+    }
+
 
 }

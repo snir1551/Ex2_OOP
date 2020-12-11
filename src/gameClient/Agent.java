@@ -45,4 +45,9 @@ public class Agent {
     public geo_location getLocation() {
         return location;
     }
+
+    public String toString()
+    {
+        return "id = " + getId() + " value = " + getValue() + " src = " + getSrc() + " dest = " + getDest() + " speed = " + getSpeed() + " location" + getLocation();
+    }
 }
