@@ -1,17 +1,25 @@
 package gameClient;
 
+import JsonWrapper.DirectedWeightedGraphJsonWrapper;
+import api.DWGraph_DS;
+import api.directed_weighted_graph;
 import api.game_service;
+import com.google.gson.Gson;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 
 public class MyGameFrame extends JFrame implements ActionListener {
     private ArrayList<JMenuItem> menuItems;
     MyGamePanel myPanel;
+    Arena arena;
     public MyGameFrame()
     {
         super("MyGame");
@@ -28,6 +36,7 @@ public class MyGameFrame extends JFrame implements ActionListener {
         }
         if(e.getSource() == menuItems.get(1))
         {
+            myPanel.update(this.arena);
 
         }
     }

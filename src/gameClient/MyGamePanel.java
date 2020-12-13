@@ -40,6 +40,7 @@ public class MyGamePanel extends JPanel {
         location = new NodeLocation(graph);
     }
 
+
     @Override
     public void paintComponent(Graphics g)
     {

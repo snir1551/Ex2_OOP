@@ -23,6 +23,7 @@ public class Arena {
     private ArrayList<Pokemon> pokemons;
     private ArrayList<Agent> agents;
     private Server server;
+    ServerManagement serverManagement;
     public Arena()
     {
 
@@ -122,6 +123,12 @@ public class Arena {
         ArrayList<Agent> agents = gson.fromJson(game.getAgents(), ArrayList.class);
         return agents;
 
+    }
+
+    public directed_weighted_graph load()
+    {
+        directed_weighted_graph g = deserializeGraph(serverManagement);
+        return g;
     }
 
 //    public Pair<Double,Double> WorldToFrame()
