@@ -8,6 +8,7 @@ import gameClient.Deserializer.ServerDeserializer;
 import gameClient.Deserializer.ServerGraphJsonDeserializer;
 import gameClient.Deserializer.ServerPokemonJsonDeserializer;
 import Server.Game_Server_Ex2;
+import gameClient.util.Point3D;
 import kotlin.Pair;
 import kotlin.jvm.Synchronized;
 
@@ -18,8 +19,10 @@ public class Client implements Runnable {
     private MyGameFrame mygame;
     private ServerManagement game;
     private Server server;
-    private double moves;
+    private long moves;
     private long sleep = 500;
+    private long dt = 100;
+    private node_location location;
     public static final double EPS1 = 0.001, EPS2=EPS1*EPS1, EPS=EPS2;
     public Client()
     {
@@ -29,7 +32,7 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-        game = new ServerManagement(11);
+        game = new ServerManagement(0);
         arena = new Arena(game, false);
         mygame = new MyGameFrame();
         mygame.setVisible(true);
@@ -58,7 +61,7 @@ public class Client implements Runnable {
             }
         }).start();
         int ind=0;
-        long dt=300;
+        //long dt=300;
         while(game.isRunning())
         {
             game.move();
@@ -71,19 +74,18 @@ public class Client implements Runnable {
                 }
             }
 
+
+
             updateAgentPaths(agentsToUpdate, mapAgentPath);
-
-
 
             try {
                 if(ind%1==0) {}
-                Thread.sleep(sleep);
+                Thread.sleep(moves*100);
                 ind++;
             }
             catch(Exception e) {
                 e.printStackTrace();
             }
-
 
 
         }
@@ -123,25 +125,27 @@ public class Client implements Runnable {
         List<Pokemon> sortedPokemons = getPokemonsSorted(getArena().getPokemons());
         for(Agent agent: agentsToUpdate) {
             AgentPath agentPath = mapAgentPath.get(agent.getId());
-
+            int ind = 0;
             if(agentPath.getIndex() == agentPath.getPath().size()) {
                 // at end of path (or before path was set, at beginning of game)
                 List<node_data> path = new ArrayList<>();
                 path = shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(),sortedPokemons.get(agentPath.getId()));
                 agentPath.setPath(path);
                 agentPath.setIndex(1);
-                moves = calculateMoves(agentPath);
+
+                //dt = set_SDT(100,agentPath,sortedPokemons.get(agentPath.getId()));
                 game.chooseNextEdge(agent.getId(), agentPath.getPath().get(0).getKey());
+
             } else {
                 // not at end of path
-                if(agentPath.getIndex() == agentPath.getPath().size()-1)
-                {
-                    sleep = 240;
-                }
-                else
-                    sleep = 400;
+
+
                 game.chooseNextEdge(agent.getId(), agentPath.getPath().get(agentPath.getIndex()).getKey());
+                moves = calculateMoves(agentPath);
                 agentPath.setIndex(agentPath.getIndex() + 1);
+
+
+
 
             }
         }
@@ -289,20 +293,18 @@ public class Client implements Runnable {
         return agentList;
     }
 
-    private double calculateMoves(AgentPath agentPath)
+    private long calculateMoves(AgentPath agentPath)
     {
-        node_data node1Location = agentPath.getPath().get(agentPath.getIndex());
+
+        node_data node1Location = agentPath.getPath().get(agentPath.getIndex()-1);
         node_data node2Location;
-        if(agentPath.getPath().get(agentPath.getIndex()).getKey() < agentPath.getPath().size()-1) {
-            node2Location = agentPath.getPath().get(agentPath.getIndex() + 1);
-        }
-        else
-            node2Location = agentPath.getPath().get(agentPath.getIndex() + 0);
+        node2Location = agentPath.getPath().get(agentPath.getIndex());
+        edge_data _curr_edge = getArena().getGraph().getEdge(node1Location.getKey(),node2Location.getKey());
         double distance = distastance(node1Location,node2Location);
 
         double speed = getArena().getAgents().get(agentPath.getId()).getSpeed();
 
-        return distance/speed;
+        return (long)((distance/speed)*1000.0);
     }
 
     private double distastance(node_data node1, node_data node2)
@@ -312,6 +314,39 @@ public class Client implements Runnable {
         double distance = Math.sqrt(x+y);
 
         return distance;
+    }
+
+
+    public long set_SDT(long ddtt,AgentPath agentPath,Pokemon p) {
+        long ddt = ddtt;
+        node_data node1Location = agentPath.getPath().get(agentPath.getIndex()-1);
+        node_data node2Location;
+        node2Location = agentPath.getPath().get(agentPath.getIndex());
+        edge_data _curr_edge = getArena().getGraph().getEdge(node1Location.getKey(),node2Location.getKey());
+
+
+        if(_curr_edge!=null) {
+            double w = _curr_edge.getWeight();
+            geo_location dest = getArena().getGraph().getNode(_curr_edge.getDest()).getLocation();
+            geo_location src = getArena().getGraph().getNode(_curr_edge.getSrc()).getLocation();
+            double de = src.distance(dest);
+            geo_location _pos = getArena().getAgents().get(agentPath.getId()).getLocation();
+            double dist = _pos.distance(dest);
+            if(p.get_edge()==_curr_edge) {
+                dist = p.getLocation().distance(_pos);
+            }
+            double norm = dist/de;
+            double speed = getArena().getAgents().get(agentPath.getId()).getSpeed();
+            double dt = w*norm / speed;
+            ddt = (long)(1000.0*dt);
+        }
+        return ddt;
+    }
+
+    private double scale(double data, double r_min, double r_max, double t_min, double t_max)
+    {
+        double res = ((data - r_min) / (r_max-r_min)) * (t_max - t_min) + t_min;
+        return res;
     }
 
 
