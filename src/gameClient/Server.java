@@ -78,23 +78,8 @@ public class Server {
     }
 
 
-    public game_service Game(int lvl) {
-        this.lvl = lvl;
-        game = Game_Server_Ex2.getServer(lvl);
-        counter = 0;
-        return game;
-    }
 
 
-    public void addAgent(int nodePosition)
-    {
-        game.addAgent(nodePosition);
-        ++counter;
-    }
 
-    public int getCounter()
-    {
-        return Server.counter;
-    }
 
 }

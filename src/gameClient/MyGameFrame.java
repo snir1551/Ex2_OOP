@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 
 public class MyGameFrame extends JFrame implements ActionListener {
-
-
     private ArrayList<JMenuItem> menuItems;
     MyGamePanel myPanel;
     public MyGameFrame()
@@ -24,17 +22,28 @@ public class MyGameFrame extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == menuItems.get(2))
+        {
+            System.exit(0);
+        }
+        if(e.getSource() == menuItems.get(1))
+        {
 
+        }
     }
 
     public void update(Arena arena) {
         myPanel.update(arena);
+        repaint();
     }
 
 
     private void initMyGameFrame()
     {
-        this.setSize(1000, 700);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int height = dimension.height;
+        int width = dimension.width;
+        this.setSize(width, height);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -52,20 +61,27 @@ public class MyGameFrame extends JFrame implements ActionListener {
         menuBar.add(menu);
         this.setJMenuBar(menuBar);
 
-        menuItems.add(new JMenuItem("Open",new ImageIcon("src\\gameClient\\resources\\open.png")));
-        menuItems.get(0).addActionListener(this);
+        menuItems.add(new JMenuItem("Open",scaleImageIcon(new ImageIcon("src\\gameClient\\resources\\open.png"),30,30)));
 
-        menuItems.add(new JMenuItem("Save",new ImageIcon("src\\gameClient\\resources\\save.png")));
-        menuItems.get(1).addActionListener(this);
+        menuItems.add(new JMenuItem("Save",scaleImageIcon(new ImageIcon("src\\gameClient\\resources\\save.png"),30,30)));
 
-        menuItems.add(new JMenuItem("Exit",new ImageIcon("src\\gameClient\\resources\\exit.png")));
-        menuItems.get(2).addActionListener(this);
+
+        menuItems.add(new JMenuItem("Exit",scaleImageIcon(new ImageIcon("src\\gameClient\\resources\\exit.png"),30,30)));
+
 
         for(JMenuItem m : menuItems)
         {
+            m.addActionListener(this);
             menu.add(m);
         }
 
+    }
+
+    private ImageIcon scaleImageIcon(ImageIcon imageIcon, int width, int height)
+    {
+        Image img = imageIcon.getImage();
+        Image newImg = img.getScaledInstance(width,height, Image.SCALE_SMOOTH);
+        return new ImageIcon(newImg);
     }
 
 }

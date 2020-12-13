@@ -35,7 +35,7 @@ public class MyGamePanel extends JPanel {
 
     public void update(Arena arena) {
         this.arena = arena;
-        graph = new DWGraph_DS(arena.getGraph());
+        graph = arena.getGraph();
         //agent = arena.getAgents();
         location = new NodeLocation(graph);
     }

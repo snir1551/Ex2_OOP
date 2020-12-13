@@ -29,27 +29,15 @@ public class Arena {
     }
 
 
-    public Arena(game_service game) {
+    public Arena(ServerManagement game, boolean withAgents) {
         this.graph = deserializeGraph(game);
         this.pokemons = deserializePokemon(game);
         this.server = deserializeServer(game);
-    }
 
-    public void updateAll(game_service game)
-    {
-        this.graph = deserializeGraph(game);
-        this.pokemons = deserializePokemon(game);
-        this.agents = deserializeAgent(game);
-        this.server = deserializeServer(game);
+        if(withAgents) {
+            this.agents = deserializeAgent(game);
+        }
     }
-
-    public void updateWithoutAgent(game_service game)
-    {
-        this.graph = deserializeGraph(game);
-        this.pokemons = deserializePokemon(game);
-        this.server = deserializeServer(game);
-    }
-
 
     public void setGraph(directed_weighted_graph graph)
     {
@@ -83,7 +71,7 @@ public class Arena {
         return server;
     }
 
-    public directed_weighted_graph deserializeGraph(game_service game)
+    public directed_weighted_graph deserializeGraph(ServerManagement game)
     {
 
         GsonBuilder builder = new GsonBuilder();
@@ -96,7 +84,7 @@ public class Arena {
 
     }
 
-    public ArrayList<Pokemon> deserializePokemon(game_service game)
+    public ArrayList<Pokemon> deserializePokemon(ServerManagement game)
     {
 
         GsonBuilder builder = new GsonBuilder();
@@ -109,7 +97,7 @@ public class Arena {
 
     }
 
-    public Server deserializeServer(game_service game)
+    public Server deserializeServer(ServerManagement game)
     {
 
         GsonBuilder builder = new GsonBuilder();
@@ -123,7 +111,7 @@ public class Arena {
 
     }
 
-    public ArrayList<Agent> deserializeAgent(game_service game)
+    public ArrayList<Agent> deserializeAgent(ServerManagement game)
     {
 
         GsonBuilder builder = new GsonBuilder();
