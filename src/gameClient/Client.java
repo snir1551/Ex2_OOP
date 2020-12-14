@@ -21,7 +21,8 @@ public class Client implements Runnable {
     private Server server;
     private double moves;
     private long sleep = 500;
-    private long dt = 100;
+    private double dt = 100;
+    private double dtt = 100;
     private node_location location;
     public static final double EPS1 = 0.001, EPS2=EPS1*EPS1, EPS=EPS2;
     public Client()
@@ -77,8 +78,8 @@ public class Client implements Runnable {
 
 
             updateAgentPaths(agentsToUpdate, mapAgentPath);
-
             game.move();
+
 
         }
     }
@@ -129,14 +130,33 @@ public class Client implements Runnable {
                 game.chooseNextEdge(agent.getId(), agentPath.getPath().get(agentPath.getIndex()).getKey());
 
 
-
-                    dt = set_SDT(100,agentPath,sortedPokemons.get(0));
+                Pair<Double,Double> d = set_SDT(100,agentPath,sortedPokemons.get(0));
+                dt = d.getFirst();
+                dtt = d.getSecond();
+                if(agentPath.getIndex() == agentPath.getPath().size()-1)
+                {
                     try {
                         Thread.sleep((long)(dt));
+                        game.move();
+                        Thread.sleep((long)(dtt));
+
                     }
                     catch(Exception e) {
                         e.printStackTrace();
                     }
+                }
+
+                // }
+                else
+                {
+                    moves = calculateMoves(agentPath);
+                    try {
+                        Thread.sleep((long)(moves*1000.0));
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
 
 
@@ -146,16 +166,26 @@ public class Client implements Runnable {
 
 
                 game.chooseNextEdge(agent.getId(), agentPath.getPath().get(agentPath.getIndex()).getKey());
+                //if(agentPath.getIndex() == agentPath.getPath().size()-1)
+                //{
+                Pair<Double,Double> d = set_SDT(100,agentPath,sortedPokemons.get(agentPath.getId()));
+                dt = d.getFirst();
+                dtt = d.getSecond();
                 if(agentPath.getIndex() == agentPath.getPath().size()-1)
                 {
-                    dt = set_SDT(100,agentPath,sortedPokemons.get(0));
                     try {
                         Thread.sleep((long)(dt));
+                        game.move();
+                        Thread.sleep((long)(dtt));
+
+
                     }
                     catch(Exception e) {
                         e.printStackTrace();
                     }
                 }
+
+               // }
                 else
                 {
                     moves = calculateMoves(agentPath);
@@ -348,8 +378,9 @@ public class Client implements Runnable {
     }
 
 
-    public long set_SDT(long ddtt,AgentPath agentPath,Pokemon p) {
-        long ddt = ddtt;
+    public Pair<Double,Double> set_SDT(double ddtt,AgentPath agentPath,Pokemon p) {
+        double ddt = ddtt;
+        double ddttt = 0;
         node_data node1Location = agentPath.getPath().get(agentPath.getIndex()-1);
         node_data node2Location;
         node2Location = agentPath.getPath().get(agentPath.getIndex());
@@ -360,7 +391,9 @@ public class Client implements Runnable {
             geo_location dest = getArena().getGraph().getNode(_curr_edge.getDest()).getLocation();
             geo_location src = getArena().getGraph().getNode(_curr_edge.getSrc()).getLocation();
             double de = src.distance(dest);
+
             geo_location _pos = getArena().getAgents().get(agentPath.getId()).getLocation();
+
             double dist = _pos.distance(dest);
             if(p.get_edge()==_curr_edge) {
                 dist = p.getLocation().distance(_pos);
@@ -368,9 +401,11 @@ public class Client implements Runnable {
             double norm = dist/de;
             double speed = getArena().getAgents().get(agentPath.getId()).getSpeed();
             double dt = w*norm / speed;
-            ddt = (long)(1000.0*dt);
+            double dtd = Math.abs(w-w*norm);
+            ddt = (double)(1000.0*dt);
+            ddttt = (double)(1000.0*dtd);
         }
-        return ddt;
+        return new Pair<Double, Double>(ddt,ddttt);
     }
 
     private double scale(double data, double r_min, double r_max, double t_min, double t_max)
