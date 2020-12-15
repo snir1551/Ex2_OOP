@@ -25,6 +25,8 @@ public class Client implements Runnable {
     private double dt = 100;
     private double dtt = 100;
     private node_location location;
+    private Pair<List<node_data>,Integer> path;
+    private Pair<Double,Double> d;
     public static final double EPS1 = 0.001, EPS2=EPS1*EPS1, EPS=EPS2;
     public Client()
     {
@@ -124,7 +126,7 @@ public class Client implements Runnable {
         Map<Integer,AgentPath> map = new HashMap<>();
 
         for(Agent agent: arena.getAgents()) {
-            map.put(agent.getId(), new AgentPath(agent.getId(), new ArrayList<>(), 0,0));
+            map.put(agent.getId(), new AgentPath(agent.getId(), new ArrayList<>(), 0,0,null));
         }
 
 
@@ -148,16 +150,29 @@ public class Client implements Runnable {
             int ind = 0;
             if(agentPath.getIndex() == agentPath.getPath().size()) {
                 // at end of path (or before path was set, at beginning of game)
-                List<node_data> path = new ArrayList<>();
-                path = shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(),sortedPokemons.get(agentPath.getId()));
-                agentPath.setPath(path);
-                agentPath.setIndex(1);
+                if(agent.getId() == 1)
+                {
+                    path = AgentClosetPokemon(agentPath,sortedPokemons);
+                    agentPath.setPath(path.getFirst());
+                    agentPath.setIndex(1);
+                    d = set_SDT(100,agentPath,sortedPokemons.get(path.getSecond()));
+                }
+                else
+                {
+                    List<node_data> path = new ArrayList<>();
+                    path = shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(),sortedPokemons.get(agentPath.getId()));
+                    agentPath.setPath(path);
+                    agentPath.setIndex(1);
+                    d = set_SDT(100,agentPath,sortedPokemons.get(0));
+                }
+
+
 
 
                 game.chooseNextEdge(agent.getId(), agentPath.getPath().get(agentPath.getIndex()).getKey());
 
 
-                Pair<Double,Double> d = set_SDT(100,agentPath,sortedPokemons.get(0));
+
                 dt = d.getFirst();
                 dtt = d.getSecond();
                 if(agentPath.getIndex() == agentPath.getPath().size()-1)
@@ -192,7 +207,13 @@ public class Client implements Runnable {
                 game.chooseNextEdge(agent.getId(), agentPath.getPath().get(agentPath.getIndex()).getKey());
                 //if(agentPath.getIndex() == agentPath.getPath().size()-1)
                 //{
-                Pair<Double,Double> d = set_SDT(100,agentPath,sortedPokemons.get(agentPath.getId()));
+                if(agent.getId() == 1) {
+                    d = set_SDT(100, agentPath, sortedPokemons.get(path.getSecond()));
+                }
+                else
+                {
+                    d = set_SDT(100,agentPath,sortedPokemons.get(0));
+                }
                 dt = d.getFirst();
                 dtt = d.getSecond();
                 if(agentPath.getIndex() == agentPath.getPath().size()-1)
@@ -424,7 +445,31 @@ public class Client implements Runnable {
     }
 
 
+    private Pair<List<node_data>,Integer> AgentClosetPokemon(AgentPath agentPath, List<Pokemon> pokemons)
+    {
+        int min = Integer.MAX_VALUE;
+        List<node_data> path = null;
+        int location = -1;
+        int i = 0;
+        for(Pokemon p : pokemons)
+        {
+            if(shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(),p).size() < min)
+            {
+                path = shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(),p);
+                min = path.size();
+                location = i;
+            }
+            i++;
+        }
 
+        return new Pair<List<node_data>,Integer>(path,location);
+    }
+
+//    private void AgentRandomPokemon(AgentPath agentPath, List<Pokemon> pokemons)
+//    {
+//        Random random = new Random(pokemons.size());
+//
+//    }
 
 
 }

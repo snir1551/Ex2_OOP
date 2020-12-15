@@ -10,11 +10,23 @@ public class Pokemon {
     private Point3D location;
     private edge_data _edge;
 
+    public Pokemon()
+    {
+
+    }
+
     public Pokemon(double value, int type, Point3D location)
     {
         this.value = value;
         this.type = type;
         this.location = new Point3D(location);
+    }
+
+    public Pokemon(Pokemon p)
+    {
+        this.value = p.getValue();
+        this.type = p.getType();
+        this.location = new Point3D(p.getLocation().x(),p.getLocation().y(),p.getLocation().z());
     }
 
     public Pokemon(edge_data edge)
@@ -50,7 +62,6 @@ public class Pokemon {
     {
         return "value = " + value + " Type = " + type + " location[" + location.x() + "," + location.y() + "," + location.z() + "]";
     }
-
 
 
 }

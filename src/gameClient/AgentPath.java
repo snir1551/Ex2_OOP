@@ -10,12 +10,13 @@ public class AgentPath implements Comparable<AgentPath> {
     private List<node_data> path;
     private int index;
     private double timeToSleep;
-
-    public AgentPath(int id, List<node_data> path, int index, double timeToSleep) {
+    private Pokemon pokemon;
+    public AgentPath(int id, List<node_data> path, int index, double timeToSleep,Pokemon pokemon) {
         this.id = id;
         this.path = path;
         this.index = index;
         this.timeToSleep = timeToSleep;
+        this.pokemon = pokemon;
     }
 
 
@@ -61,6 +62,13 @@ public class AgentPath implements Comparable<AgentPath> {
         this.timeToSleep = timeToSleep;
     }
 
+    public Pokemon getPokemon() {
+        return pokemon;
+    }
+
+    public void setPokemon(Pokemon pokemon) {
+        this.pokemon = pokemon;
+    }
 
     @Override
     public int compareTo(@NotNull AgentPath o) {
