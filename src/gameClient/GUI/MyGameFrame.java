@@ -1,9 +1,7 @@
 package gameClient;
 
 import JsonWrapper.DirectedWeightedGraphJsonWrapper;
-import api.DWGraph_DS;
-import api.directed_weighted_graph;
-import api.game_service;
+import api.*;
 import com.google.gson.Gson;
 
 import javax.swing.*;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 
 
 public class MyGameFrame extends JFrame implements ActionListener {
+    private static JFrame jFrame;
     private ArrayList<JMenuItem> menuItems;
     MyGamePanel myPanel;
     Arena arena;
@@ -34,12 +33,20 @@ public class MyGameFrame extends JFrame implements ActionListener {
         {
             System.exit(0);
         }
-        if(e.getSource() == menuItems.get(1))
-        {
-            myPanel.update(this.arena);
+//        if(e.getSource() == menuItems.get(0))
+//        {
+//            myPanel.update(this.arena);
+//            arena.load("asda");
+//        }
 
-        }
+//        if(e.getSource() == menuItems.get(1))
+//        {
+//            myPanel.update(this.arena);
+//            //arena.save();
+//        }
     }
+
+
 
     public void update(Arena arena) {
         myPanel.update(arena);
@@ -92,5 +99,11 @@ public class MyGameFrame extends JFrame implements ActionListener {
         Image newImg = img.getScaledInstance(width,height, Image.SCALE_SMOOTH);
         return new ImageIcon(newImg);
     }
+
+    public static JFrame getjFrame()
+    {
+        return jFrame;
+    }
+
 
 }
