@@ -8,11 +8,23 @@ public class AgentPath {
     private int id;
     private List<node_data> path;
     private int index;
+    private double timeToSleep;
 
-    public AgentPath(int id, List<node_data> path, int index) {
+    public AgentPath(int id, List<node_data> path, int index, double timeToSleep) {
         this.id = id;
         this.path = path;
         this.index = index;
+        this.timeToSleep = timeToSleep;
+    }
+
+
+
+    public AgentPath(AgentPath agentPath)
+    {
+        this.id = agentPath.id;
+        this.path = agentPath.path;
+        this.index = agentPath.index;
+        this.timeToSleep = agentPath.timeToSleep;
     }
 
 
@@ -39,4 +51,14 @@ public class AgentPath {
     public int getIndex() {
         return index;
     }
+
+    public double getTimeToSleep() {
+        return timeToSleep;
+    }
+
+    public void setTimeToSleep(double timeToSleep) {
+        this.timeToSleep = timeToSleep;
+    }
+
+
 }

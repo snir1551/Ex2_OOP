@@ -1,30 +1,38 @@
-package gameClient;
+package gameClient.GUI;
 
-import JsonWrapper.DirectedWeightedGraphJsonWrapper;
-import api.*;
-import com.google.gson.Gson;
+import gameClient.Arena;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class MyGameFrame extends JFrame implements ActionListener {
-    private static JFrame jFrame;
+
     private ArrayList<JMenuItem> menuItems;
     MyGamePanel myPanel;
     Arena arena;
+    private Image backgroundImage;
     public MyGameFrame()
     {
         super("MyGame");
         initMyGameFrame();
         createMenuBar();
+        Image src;
+
         initMyGamePanel();
+//        src = Toolkit.getDefaultToolkit().createImage("src\\gameClient\\resources\\Background\\pokemon2.png");
+//        try {
+//            src = ImageIO.read(new File("src\\gameClient\\resources\\Background\\pokemon2.png"));
+//        } catch (IOException ex) {
+//
+//        }
+//        setContentPane(new JLabel(new ImageIcon(src)));
     }
 
     @Override
@@ -100,10 +108,17 @@ public class MyGameFrame extends JFrame implements ActionListener {
         return new ImageIcon(newImg);
     }
 
-    public static JFrame getjFrame()
-    {
-        return jFrame;
-    }
+
+//    private void WindowBackground()
+//    {
+//        ImageIcon img = new ImageIcon("src\\gameClient\\resources\\Background\\backgroundGame.png");
+//        JLabel background = new JLabel("",img,JLabel.CENTER);
+//        background.setBounds(0,0,this.getWidth(),this.getHeight());
+//        add(background);
+//    }
+
+
+
 
 
 }

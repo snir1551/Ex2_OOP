@@ -7,15 +7,10 @@ import gameClient.Deserializer.ServerAgentJsonDeserailizer;
 import gameClient.Deserializer.ServerDeserializer;
 import gameClient.Deserializer.ServerGraphJsonDeserializer;
 import gameClient.Deserializer.ServerPokemonJsonDeserializer;
-import gameClient.util.Point3D;
-import gameClient.util.Range;
-import gameClient.util.Range2D;
-import gameClient.util.Range2Range;
-import kotlin.Pair;
+import gameClient.GUI.MyGameFrame;
 
-import java.lang.reflect.Array;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Arena {
 
@@ -24,56 +19,51 @@ public class Arena {
     private ArrayList<Agent> agents;
     private Server server;
     ServerManagement serverManagement;
-    public Arena()
-    {
+
+    public Arena() {
 
     }
 
 
     public Arena(ServerManagement game, boolean withAgents) {
+        this.serverManagement = game;
         this.graph = deserializeGraph(game);
         this.pokemons = deserializePokemon(game);
         this.server = deserializeServer(game);
-
-        if(withAgents) {
+        if (withAgents) {
             this.agents = deserializeAgent(game);
         }
     }
 
-    public void setGraph(directed_weighted_graph graph)
-    {
+    public void setGraph(directed_weighted_graph graph) {
         this.graph = new DWGraph_DS(graph);
     }
-    public directed_weighted_graph getGraph()
-    {
+
+    public directed_weighted_graph getGraph() {
         return graph;
     }
 
-    public void setPokemons(ArrayList<Pokemon>  p)
-    {
+    public void setPokemons(ArrayList<Pokemon> p) {
         this.pokemons = p;
     }
-    public ArrayList<Pokemon> getPokemons()
-    {
+
+    public ArrayList<Pokemon> getPokemons() {
         return pokemons;
     }
 
-    public void setAgents(ArrayList<Agent>  a)
-    {
+    public void setAgents(ArrayList<Agent> a) {
         this.agents = a;
     }
-    public ArrayList<Agent> getAgents()
-    {
+
+    public ArrayList<Agent> getAgents() {
         return agents;
     }
 
-    public Server getServer()
-    {
+    public Server getServer() {
         return server;
     }
 
-    public directed_weighted_graph deserializeGraph(ServerManagement game)
-    {
+    public directed_weighted_graph deserializeGraph(ServerManagement game) {
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DWGraph_DS.class, new ServerGraphJsonDeserializer());
@@ -85,8 +75,7 @@ public class Arena {
 
     }
 
-    public ArrayList<Pokemon> deserializePokemon(ServerManagement game)
-    {
+    public ArrayList<Pokemon> deserializePokemon(ServerManagement game) {
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ArrayList.class, new ServerPokemonJsonDeserializer());
@@ -98,8 +87,7 @@ public class Arena {
 
     }
 
-    public Server deserializeServer(ServerManagement game)
-    {
+    public Server deserializeServer(ServerManagement game) {
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(Server.class, new ServerDeserializer());
@@ -112,8 +100,7 @@ public class Arena {
 
     }
 
-    public ArrayList<Agent> deserializeAgent(ServerManagement game)
-    {
+    public ArrayList<Agent> deserializeAgent(ServerManagement game) {
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ArrayList.class, new ServerAgentJsonDeserailizer());
@@ -125,11 +112,29 @@ public class Arena {
 
     }
 
-    public directed_weighted_graph load()
+    public ServerManagement getServerManagement()
     {
-        directed_weighted_graph g = deserializeGraph(serverManagement);
-        return g;
+        return serverManagement;
     }
+
+    public void setServerManagement(ServerManagement serverManagement)
+    {
+        this.serverManagement = serverManagement;
+    }
+
+
+//    public void save()
+//    {
+//        dw_graph_algorithms g = new DWGraph_Algo(graph);
+//
+//        FileDialog chooser = new FileDialog(MyGameFrame.getjFrame(), "", FileDialog.SAVE);
+//        chooser.setVisible(true);
+//        String filename = chooser.getFile();
+//        if (filename != null) {
+//            g.save(chooser.getDirectory() + filename + ".txt");
+//        }
+//
+//    }
 
 //    public Pair<Double,Double> WorldToFrame()
 //    {

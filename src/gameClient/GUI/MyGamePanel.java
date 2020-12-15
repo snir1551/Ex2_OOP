@@ -1,8 +1,9 @@
-package gameClient;
+package gameClient.GUI;
 
 
 import Server.Game_Server_Ex2;
 import api.*;
+import gameClient.*;
 import gameClient.util.Point3D;
 import gameClient.util.Range;
 import gameClient.util.Range2D;
@@ -14,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -28,16 +30,21 @@ public class MyGamePanel extends JPanel {
     private Server server;
     private Arena arena;
     private node_location location;
-
+    private Image img;
+    ServerManagement serverManagement;
+    private Image backgroundImage;
     /**
      * Constructor
      */
 
-    public void update(Arena arena) {
+    public void update(Arena arena)
+    {
+
         this.arena = arena;
         graph = arena.getGraph();
         //agent = arena.getAgents();
         location = new NodeLocation(graph);
+        this.setBackground(Color.blue);
     }
 
 
@@ -47,6 +54,7 @@ public class MyGamePanel extends JPanel {
         super.paintComponent(g);
 
         if(graph != null) {
+
             int w = this.getWidth();
             int h = this.getHeight();
             g.clearRect(0, 0, w, h);
@@ -55,6 +63,7 @@ public class MyGamePanel extends JPanel {
             drawAgent(g);
             drawGrade(g);
             drawMoves(g);
+            DrawTime(g);
             //drawClock(g);
         }
     }
@@ -103,20 +112,39 @@ public class MyGamePanel extends JPanel {
     private void drawPokemons(Graphics g)
     {
         pokemon = new ArrayList<>(arena.getPokemons());
-        int r = 3;
+        int r = 10;
         double maxX = location.getMaxXNodeData().getLocation().x();
         double minX = location.getMinXNodeData().getLocation().x();
         double maxY = location.getMaxYNodeData().getLocation().y();
         double minY = location.getMinYNodeData().getLocation().y();
+        BufferedImage PokemonValue;
         for(Pokemon p : pokemon)
         {
-            if(p.getType() == -1)
-                g.setColor(Color.orange);
-            else
-                g.setColor(Color.green);
             double x = scale(p.getLocation().x(),minX,maxX,20,this.getWidth()-20);
             double y = scale(p.getLocation().y(),minY,maxY,this.getHeight()-10,150);
-            g.fillOval((int)x - r, (int)y - r, 2*r, 2*r);
+            if(p.getType() == -1)
+            {
+                try {
+                    File Pokemon = new File("src\\gameClient\\resources\\Pokemons\\pokemon1.png");
+                    PokemonValue = ImageIO.read(Pokemon);
+                    g.drawImage(PokemonValue,(int)x - r, (int)y - r, 2*r, 2*r,this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                try {
+                    File Pokemon = new File("src\\gameClient\\resources\\Pokemons\\pokemon2.png");
+                    PokemonValue = ImageIO.read(Pokemon);
+                    g.drawImage(PokemonValue,(int)x - r, (int)y - r, 2*r, 2*r,this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+
         }
     }
 
@@ -132,12 +160,20 @@ public class MyGamePanel extends JPanel {
         double maxY = location.getMaxYNodeData().getLocation().y();
         double minY = location.getMinYNodeData().getLocation().y();
         g.setColor(Color.red);
-        int r = 5;
+        int r = 15;
+        BufferedImage agentAsh;
         for(Agent a : agent)
         {
             double x = scale(a.getLocation().x(),minX,maxX,20,this.getWidth()-20);
             double y = scale(a.getLocation().y(),minY,maxY,this.getHeight()-10,150);
-            g.fillOval((int)x - r, (int)y - r, 2*r, 2*r);
+            File player = new File("src\\gameClient\\resources\\Player\\ash.png");
+            try {
+                   agentAsh = ImageIO.read(player);
+                   g.drawImage(agentAsh,(int)x - r, (int)y - r, 2*r, 2*r,this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
 
     }
@@ -159,6 +195,16 @@ public class MyGamePanel extends JPanel {
         g.drawString( "Moves: "+String.valueOf(server.getMoves()),(int)100,(int)50);
     }
 
+    private void DrawTime(Graphics g)
+    {
+        double i =0;
+        double time = arena.getServerManagement().timeToEnd()/1000;
+        g.setColor(Color.blue);
+        g.drawString( "Time: "+ String.valueOf(time),(int)200,(int)50);
+    }
+
+
+
 //    private void drawClock(Graphics g)
 //    {
 //        server = arena.getServer();
@@ -171,6 +217,28 @@ public class MyGamePanel extends JPanel {
 //                g.drawString( "Time: " + String.valueOf(i),(int)50,(int)20);
 //        }
 //
+//
+//    }
+
+//    private void WindowBackGround(Graphics g)
+//    {
+//        try {
+//            img = ImageIO.read(new File("src\\gameClient\\resources\\Background\\backgroundGame.png"));
+//            System.out.println("b");
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//            System.out.println("a");
+//        }
+//        g.drawImage(img,0,0,getWidth(), getHeight(), this);
+//        repaint();
+//    }
+
+//    private void WindowBackground()
+//    {
+//        ImageIcon img = new ImageIcon("src\\gameClient\\resources\\Background\\backgroundGame.png");
+//        JLabel background = new JLabel("",img,JLabel.CENTER);
+//        background.setBounds(0,0,this.getWidth(),this.getHeight());
+//        add(background);
 //
 //    }
 

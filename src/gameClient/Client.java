@@ -8,6 +8,7 @@ import gameClient.Deserializer.ServerDeserializer;
 import gameClient.Deserializer.ServerGraphJsonDeserializer;
 import gameClient.Deserializer.ServerPokemonJsonDeserializer;
 import Server.Game_Server_Ex2;
+import gameClient.GUI.MyGameFrame;
 import gameClient.util.Point3D;
 import kotlin.Pair;
 import kotlin.jvm.Synchronized;
@@ -31,9 +32,16 @@ public class Client implements Runnable {
     }
 
 
+    public Client(int id,int lvl)
+    {
+        game = new ServerManagement(lvl);
+        game.isLogin(id);
+    }
+
+
     @Override
     public void run() {
-        game = new ServerManagement(0);
+
         arena = new Arena(game, false);
         mygame = new MyGameFrame();
         mygame.setVisible(true);
@@ -98,7 +106,7 @@ public class Client implements Runnable {
         Map<Integer,AgentPath> map = new HashMap<>();
 
         for(Agent agent: arena.getAgents()) {
-            map.put(agent.getId(), new AgentPath(agent.getId(), new ArrayList<>(), 0));
+            map.put(agent.getId(), new AgentPath(agent.getId(), new ArrayList<>(), 0,0));
         }
 
 
@@ -185,7 +193,7 @@ public class Client implements Runnable {
                     }
                 }
 
-               // }
+                // }
                 else
                 {
                     moves = calculateMoves(agentPath);
@@ -272,9 +280,8 @@ public class Client implements Runnable {
         {
             arena = new Arena(game, true);
         }
-
         setArena(arena);
-
+        //arena.setServerManagement(game);
         for(Pokemon p : getArena().getPokemons())
         {
             updateEdge(p,getArena().getGraph());
@@ -282,7 +289,8 @@ public class Client implements Runnable {
     }
 
 
-    private void updateGraphics() {
+    private void updateGraphics()
+    {
         mygame.update(getArena());
     }
 
@@ -408,11 +416,8 @@ public class Client implements Runnable {
         return new Pair<Double, Double>(ddt,ddttt);
     }
 
-    private double scale(double data, double r_min, double r_max, double t_min, double t_max)
-    {
-        double res = ((data - r_min) / (r_max-r_min)) * (t_max - t_min) + t_min;
-        return res;
-    }
+
+
 
 
 }

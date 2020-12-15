@@ -1,4 +1,4 @@
-package example0;
+package gameClient.Audio;
 
 import javazoom.jl.player.*;
 import java.io.FileInputStream;

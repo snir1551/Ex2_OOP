@@ -92,4 +92,14 @@ public class ServerManagement {
     {
         return counterAgents;
     }
+
+    public boolean isLogin(int id)
+    {
+        return game.login(id);
+    }
+
+    public long timeToEnd()
+    {
+        return game.timeToEnd();
+    }
 }
