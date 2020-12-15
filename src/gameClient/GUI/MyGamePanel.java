@@ -30,12 +30,17 @@ public class MyGamePanel extends JPanel {
     private Server server;
     private Arena arena;
     private node_location location;
-    private Image img;
+    private Image background;
     ServerManagement serverManagement;
     private Image backgroundImage;
     /**
      * Constructor
      */
+    public MyGamePanel()
+    {
+        super();
+        background = new ImageIcon("src\\gameClient\\resources\\Background\\backgroundGame.png").getImage();
+    }
 
     public void update(Arena arena)
     {
@@ -45,14 +50,19 @@ public class MyGamePanel extends JPanel {
         //agent = arena.getAgents();
         location = new NodeLocation(graph);
         this.setBackground(Color.blue);
+        //background = new ImageIcon("src\\gameClient\\resources\\Background\\backgroundGame.png").getImage();
     }
 
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        //g.drawImage(background,0,0,this.getWidth(),this.getHeight(),this);
+    }
 
     @Override
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-
         if(graph != null) {
 
             int w = this.getWidth();
@@ -66,6 +76,7 @@ public class MyGamePanel extends JPanel {
             DrawTime(g);
             //drawClock(g);
         }
+
     }
 
 

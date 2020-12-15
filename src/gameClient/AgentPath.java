@@ -1,10 +1,11 @@
 package gameClient;
 
 import api.node_data;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class AgentPath {
+public class AgentPath implements Comparable<AgentPath> {
     private int id;
     private List<node_data> path;
     private int index;
@@ -61,4 +62,13 @@ public class AgentPath {
     }
 
 
+    @Override
+    public int compareTo(@NotNull AgentPath o) {
+        if(this.getTimeToSleep() > o.getTimeToSleep())
+            return 1;
+        else if(this.getTimeToSleep() == o.getTimeToSleep())
+            return 0;
+        else
+            return -1;
+    }
 }

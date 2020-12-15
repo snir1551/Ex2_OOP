@@ -85,8 +85,26 @@ public class Client implements Runnable {
 
 
 
-            updateAgentPaths(agentsToUpdate, mapAgentPath);
+            List<AgentPath> listSortedAgentPath = updateAgentPaths(agentsToUpdate, mapAgentPath);
+            if(listSortedAgentPath.size() != 0)
+            {
+                System.out.println(listSortedAgentPath.size());
+                try {
+                    Thread.sleep((long)listSortedAgentPath.get(0).getTimeToSleep());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                try {
+                    Thread.sleep((long)((dt+dtt)/10));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             game.move();
+
 
 
         }
@@ -122,8 +140,9 @@ public class Client implements Runnable {
         this.arena = arena;
     }
 
-    private void updateAgentPaths(List<Agent> agentsToUpdate, Map<Integer,AgentPath> mapAgentPath) {
+    private List<AgentPath> updateAgentPaths(List<Agent> agentsToUpdate, Map<Integer,AgentPath> mapAgentPath) {
         List<Pokemon> sortedPokemons = getPokemonsSorted(getArena().getPokemons());
+        List<AgentPath> sortAgentpath = new ArrayList<>();
         for(Agent agent: agentsToUpdate) {
             AgentPath agentPath = mapAgentPath.get(agent.getId());
             int ind = 0;
@@ -144,10 +163,7 @@ public class Client implements Runnable {
                 if(agentPath.getIndex() == agentPath.getPath().size()-1)
                 {
                     try {
-                        Thread.sleep((long)(dt));
-                        game.move();
-                        Thread.sleep((long)(dtt));
-
+                        agentPath.setTimeToSleep(dt);
                     }
                     catch(Exception e) {
                         e.printStackTrace();
@@ -159,7 +175,7 @@ public class Client implements Runnable {
                 {
                     moves = calculateMoves(agentPath);
                     try {
-                        Thread.sleep((long)(moves*1000.0));
+                        agentPath.setTimeToSleep(dt);
                     }
                     catch(Exception e) {
                         e.printStackTrace();
@@ -181,28 +197,14 @@ public class Client implements Runnable {
                 dtt = d.getSecond();
                 if(agentPath.getIndex() == agentPath.getPath().size()-1)
                 {
-                    try {
-                        Thread.sleep((long)(dt));
-                        game.move();
-                        Thread.sleep((long)(dtt));
-
-
-                    }
-                    catch(Exception e) {
-                        e.printStackTrace();
-                    }
+                    agentPath.setTimeToSleep(dt);
                 }
 
                 // }
                 else
                 {
                     moves = calculateMoves(agentPath);
-                    try {
-                        Thread.sleep((long)(moves*1000.0));
-                    }
-                    catch(Exception e) {
-                        e.printStackTrace();
-                    }
+                    agentPath.setTimeToSleep(dt);
                 }
 
 
@@ -211,7 +213,12 @@ public class Client implements Runnable {
 
 
             }
+            sortAgentpath.add(agentPath);
         }
+
+        Collections.sort(sortAgentpath);
+
+        return sortAgentpath;
     }
 
     private static boolean isOnEdge(geo_location p, geo_location src, geo_location dest ) {
