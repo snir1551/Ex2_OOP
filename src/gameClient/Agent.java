@@ -11,6 +11,7 @@ public class Agent {
     private double speed;
     private Point3D location;
     private static int counter;
+    private String idPokemon;
     public Agent(int id, double value, int src, int dest, double speed, Point3D location)
     {
         this.id = id;
@@ -20,6 +21,7 @@ public class Agent {
         this.speed = speed;
         this.location = new Point3D(location);
         ++counter;
+        idPokemon = null;
     }
 
     public int getId() {
@@ -44,6 +46,14 @@ public class Agent {
 
     public geo_location getLocation() {
         return location;
+    }
+
+    public String getIdPokemon() {
+        return idPokemon;
+    }
+
+    public void setIdPokemon(String idPokemon) {
+        this.idPokemon = idPokemon;
     }
 
     public String toString()

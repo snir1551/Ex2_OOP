@@ -9,7 +9,8 @@ public class Pokemon {
     private int type;
     private Point3D location;
     private edge_data _edge;
-
+    private boolean visted;
+    private String id;
     public Pokemon()
     {
 
@@ -20,6 +21,8 @@ public class Pokemon {
         this.value = value;
         this.type = type;
         this.location = new Point3D(location);
+        this.visted = false;
+        id = location.toString();
     }
 
     public Pokemon(Pokemon p)
@@ -63,5 +66,19 @@ public class Pokemon {
         return "value = " + value + " Type = " + type + " location[" + location.x() + "," + location.y() + "," + location.z() + "]";
     }
 
+    public boolean isVisted() {
+        return visted;
+    }
 
+    public void setVisted(boolean visted) {
+        this.visted = visted;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
