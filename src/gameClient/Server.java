@@ -30,11 +30,6 @@ public class Server {
         this.agents = agents;
     }
 
-    public Server()
-    {
-
-    }
-
 
     public int getPokemons() {
         return pokemons;

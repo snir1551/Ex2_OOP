@@ -1,7 +1,5 @@
 package gameClient;
 
-import gameClient.Audio.SimplePlayer;
-import gameClient.GUI.StagesGUI;
 import gameClient.GUI.WelcomeGUI;
 
 public class Ex2 {

@@ -5,7 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import Server.Game_Server_Ex2;
 import gameClient.Audio.SimplePlayer;
 import gameClient.Client;
 import gameClient.ServerManagement;
@@ -36,23 +35,42 @@ public class WelcomeGUI extends JFrame {
     }
     private void initLogin()
     {
-        SimplePlayer player = new SimplePlayer("src\\gameClient\\resources\\Audio\\PokemonSong.mp3");
-        Thread playerThread = new Thread(player);
-        playerThread.start();
-        String id = JOptionPane.showInputDialog("Enter your id number" );
-        try {
-            if(id.length() != 9)
-            {
-                JOptionPane.showMessageDialog(null, "Invalid input, length of id need to be 9", "Error", JOptionPane.ERROR_MESSAGE);
+        String[] optionsMusic = {"YES","NO"};
+        int MusicNum = JOptionPane.showOptionDialog(null, "Do you want Music in your game?", "Click a button YES or NO",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, optionsMusic, optionsMusic[0]);
+        if(MusicNum == 0)
+        {
+            SimplePlayer player = new SimplePlayer("src\\gameClient\\resources\\Audio\\PokemonSong.mp3");
+            Thread playerThread = new Thread(player);
+            playerThread.start();
+        }
+        else if(MusicNum != 1)
+        {
+            System.exit(0);
+        }
+        int tryID = 3;
+        while(tryID>0)
+        {
+            String id = JOptionPane.showInputDialog("Enter your id number" );
+            try {
+                if(id.length() != 9)
+                {
+                    tryID--;
+                    JOptionPane.showMessageDialog(null, "Invalid input, length of id need to be 9, You have " + tryID +  " more attempts", "Error", JOptionPane.ERROR_MESSAGE);
+                    if(tryID == 0)
+                        System.exit(0);
+                }
+                else
+                {
+                    this.userID = Integer.parseInt(id);
+                    break;
+                }
+            } catch (Exception Ex) {
+                JOptionPane.showMessageDialog(null, "Exit", "Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
-            else
-            {
-                this.userID = Integer.parseInt(id);
-            }
-        } catch (Exception Ex) {
-            JOptionPane.showMessageDialog(null, "Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
         File r = new File("src\\gameClient\\resources\\ball.png");
         try {
             Image robo = ImageIO.read(r);
@@ -74,7 +92,7 @@ public class WelcomeGUI extends JFrame {
         }
     }
 
-    public void welcomWindow(){
+    private void welcomWindow(){
         try {
             this.setContentPane(new JLabel(scaleImageIcon(new ImageIcon(ImageIO.read(new File("src\\gameClient\\resources\\background.png"))),this.getWidth(),this.getHeight())));
         } catch (IOException e) {

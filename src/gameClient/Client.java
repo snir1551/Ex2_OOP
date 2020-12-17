@@ -24,7 +24,9 @@ public class Client implements Runnable {
     public Client(int id,int lvl)
     {
         game = new ServerManagement(lvl);
-        game.isLogin(id);
+        boolean isLogin = game.isLogin(id);
+        if(!isLogin)
+            System.exit(0);
     }
 
 
@@ -104,7 +106,7 @@ public class Client implements Runnable {
         List<Pokemon> sortedPokemons = getPokemonsSorted(getArena().getPokemons());
         for(int i = 0; i < getArena().getServer().getAgents(); i++)
         {
-            game.addAgent(keyCloseAgent(sortedPokemons.get(i)));
+            game.addAgent(keyDirectionClosePokemon(sortedPokemons.get(i)));
         }
     }
 
@@ -112,7 +114,7 @@ public class Client implements Runnable {
         Map<Integer,AgentPath> map = new HashMap<>();
 
         for(Agent agent: arena.getAgents()) { //all agents
-            map.put(agent.getId(), new AgentPath(agent.getId(), new ArrayList<>(), 0,0,null));
+            map.put(agent.getId(), new AgentPath(agent.getId(), new ArrayList<>(), 0));
         }
 
         return map;
@@ -231,7 +233,7 @@ public class Client implements Runnable {
             sortAgentpath.add(agentPath);
         }
 
-        Collections.sort(sortAgentpath);
+        //Collections.sort(sortAgentpath);
 
         return sortAgentpath;
     }
@@ -317,7 +319,7 @@ public class Client implements Runnable {
     }
 
 
-    private int keyCloseAgent(Pokemon p)
+    private int keyDirectionClosePokemon(Pokemon p)
     {
         int key = -1;
         if(p.getType() == 1)

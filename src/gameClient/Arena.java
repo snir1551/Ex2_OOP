@@ -7,9 +7,7 @@ import gameClient.Deserializer.ServerAgentJsonDeserailizer;
 import gameClient.Deserializer.ServerDeserializer;
 import gameClient.Deserializer.ServerGraphJsonDeserializer;
 import gameClient.Deserializer.ServerPokemonJsonDeserializer;
-import gameClient.GUI.MyGameFrame;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Arena {
@@ -20,9 +18,6 @@ public class Arena {
     private Server server;
     ServerManagement serverManagement;
 
-    public Arena() {
-
-    }
 
 
     public Arena(ServerManagement game, boolean withAgents) {
@@ -43,17 +38,11 @@ public class Arena {
         return graph;
     }
 
-    public void setPokemons(ArrayList<Pokemon> p) {
-        this.pokemons = p;
-    }
 
     public ArrayList<Pokemon> getPokemons() {
         return pokemons;
     }
 
-    public void setAgents(ArrayList<Agent> a) {
-        this.agents = a;
-    }
 
     public ArrayList<Agent> getAgents() {
         return agents;
@@ -117,10 +106,6 @@ public class Arena {
         return serverManagement;
     }
 
-    public void setServerManagement(ServerManagement serverManagement)
-    {
-        this.serverManagement = serverManagement;
-    }
 
 
 //    public void save()

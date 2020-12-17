@@ -5,28 +5,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class AgentPath implements Comparable<AgentPath> {
-    private int id;
-    private List<node_data> path;
-    private int index;
-    private double timeToSleep;
-    private Pokemon pokemon;
-    public AgentPath(int id, List<node_data> path, int index, double timeToSleep,Pokemon pokemon) {
+public class AgentPath {
+    private int id; //id of agent
+    private List<node_data> path; //path of the agent
+    private int index; //index on the path
+
+    public AgentPath(int id, List<node_data> path, int index) {
         this.id = id;
         this.path = path;
         this.index = index;
-        this.timeToSleep = timeToSleep;
-        this.pokemon = pokemon;
-    }
-
-
-
-    public AgentPath(AgentPath agentPath)
-    {
-        this.id = agentPath.id;
-        this.path = agentPath.path;
-        this.index = agentPath.index;
-        this.timeToSleep = agentPath.timeToSleep;
     }
 
 
@@ -54,29 +41,6 @@ public class AgentPath implements Comparable<AgentPath> {
         return index;
     }
 
-    public double getTimeToSleep() {
-        return timeToSleep;
-    }
 
-    public void setTimeToSleep(double timeToSleep) {
-        this.timeToSleep = timeToSleep;
-    }
 
-    public Pokemon getPokemon() {
-        return pokemon;
-    }
-
-    public void setPokemon(Pokemon pokemon) {
-        this.pokemon = pokemon;
-    }
-
-    @Override
-    public int compareTo(@NotNull AgentPath o) {
-        if(this.getTimeToSleep() > o.getTimeToSleep())
-            return 1;
-        else if(this.getTimeToSleep() == o.getTimeToSleep())
-            return 0;
-        else
-            return -1;
-    }
 }
