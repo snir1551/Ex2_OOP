@@ -192,7 +192,7 @@ LIKE THIS:
 <a name="Option2"></a>
 ## Option 2:
 Another way to do it is directly from the command line.
-Example:
+to write : java -jar ex2.jar *******(you id) *(lvl between 0-20)
 
 
 
