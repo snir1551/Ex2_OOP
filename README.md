@@ -179,14 +179,12 @@ LIKE THIS:
 
 
 3)A screen will open and the fun will begin!
+  You will be able to check out your score , how much score the agent/s did, your moves , and the time
+  
+<a href="http://www.siz.co.il/"><img src="http://up419.siz.co.il/up3/mmyjzlywztmw.png" border="0" alt="agent" /></a>
+<a href="http://www.siz.co.il/"><img src="http://up419.siz.co.il/up2/02zymoijuzvt.jpg" border="0" alt="size" /></a>
 
-LIKE THIS:
 
-
-
-
-
-4)You will be able to check out your score , how much score the agent/s did, your moves , and the time
 
 
 
