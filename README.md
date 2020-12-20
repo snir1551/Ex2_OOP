@@ -193,7 +193,7 @@ LIKE THIS:
 ## Option 2:
 Another way to do it is directly from the command line.
 
-to write : java -jar ex2.jar *******(you id)      *(lvl between 0-20)
+to write : java -jar ex2.jar (your id) (lvl between 0-20)
 
 Example:
 <a href="http://www.siz.co.il/"><img src="http://up419.siz.co.il/up3/zzykjnwhymr2.png" border="0" alt="CMD" /></a>
