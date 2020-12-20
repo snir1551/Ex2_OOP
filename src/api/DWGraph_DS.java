@@ -23,6 +23,10 @@ public class DWGraph_DS implements directed_weighted_graph{
     }
 
 
+    /**
+     * Constructor
+     * @param graph - directed_weighted_graph
+     */
     public DWGraph_DS(directed_weighted_graph graph)
     {
         this();
@@ -148,18 +152,27 @@ public class DWGraph_DS implements directed_weighted_graph{
     public node_data removeNode(int key) {
         if(existNode(key))
         {
-            List<Integer> list = new ArrayList<>(mapEdgeIn.get(key).keySet());
-            for(Integer i : list)
+            if(mapEdgeIn.get(key) != null)
             {
-                removeEdge(i,key); //O(1)
+                List<Integer> list = new ArrayList<>(mapEdgeIn.get(key).keySet());
+                for(Integer i : list)
+                {
+                    removeEdge(i,key); //O(1)
+                }
             }
-            list = new ArrayList<>(mapEdgeOut.get(key).keySet());
-            for(Integer i : list)
+
+            if(mapEdgeOut.get(key) != null)
             {
-                removeEdge(key,i); // O(1)
+                List<Integer> list = new ArrayList<>(mapEdgeOut.get(key).keySet());
+                for(Integer i : list)
+                {
+                    removeEdge(key,i); // O(1)
+                }
             }
+
             mapEdgeIn.remove(key);
             mapEdgeOut.remove(key);
+            ++MC;
         }
         return mapNode.remove(key);
     }

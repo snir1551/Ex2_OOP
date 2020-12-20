@@ -1,67 +1,56 @@
 package gameClient.GUI;
 
+
+
 import gameClient.Arena;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class MyGameFrame extends JFrame implements ActionListener {
 
-    private ArrayList<JMenuItem> menuItems;
-    MyGamePanel myPanel;
-    Arena arena;
-    private Image backgroundImage;
+    private ArrayList<JMenuItem> menuItemsFile; //menu items of the file
+    private MyGamePanel myPanel; // panel
+
+
+    /**
+     * Constructor
+     */
     public MyGameFrame()
     {
-        super("MyGame");
-        initMyGameFrame();
-        createMenuBar();
-        Image src;
-
-        initMyGamePanel();
-//        src = Toolkit.getDefaultToolkit().createImage("src\\gameClient\\resources\\Background\\pokemon2.png");
-//        try {
-//            src = ImageIO.read(new File("src\\gameClient\\resources\\Background\\pokemon2.png"));
-//        } catch (IOException ex) {
-//
-//        }
-//        setContentPane(new JLabel(new ImageIcon(src)));
+        super("PokemonGame"); // name of the game
+        initMyGameFrame(); // init the game
+        createMenuBar(); // init menu bar
+        initMyGamePanel(); //init panel
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == menuItems.get(2))
+        if(e.getSource() == menuItemsFile.get(0))
         {
             System.exit(0);
         }
-//        if(e.getSource() == menuItems.get(0))
-//        {
-//            myPanel.update(this.arena);
-//            arena.load("asda");
-//        }
-
-//        if(e.getSource() == menuItems.get(1))
-//        {
-//            myPanel.update(this.arena);
-//            //arena.save();
-//        }
     }
 
 
-
+    /**
+     * update function
+     * @param arena
+     */
     public void update(Arena arena) {
         myPanel.update(arena);
         repaint();
     }
 
 
+    /**
+     * this method init the game frame
+     */
     private void initMyGameFrame()
     {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -71,36 +60,46 @@ public class MyGameFrame extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * this method init the game panel
+     */
     private void initMyGamePanel()
     {
         myPanel = new MyGamePanel();
         this.add(myPanel);
     }
 
+    /**
+     * this method create menu bar
+     */
     private void createMenuBar()
     {
-        menuItems = new ArrayList<JMenuItem>();
-        JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("File");
-        menuBar.add(menu);
-        this.setJMenuBar(menuBar);
+        menuItemsFile = new ArrayList<JMenuItem>();
+        JMenuBar menuBar = new JMenuBar(); // menubar
+        JMenu menu1 = new JMenu("File"); // menu file
+        menuBar.add(menu1); // add file to menubar
+        this.setJMenuBar(menuBar); // add menubar to this
 
-        menuItems.add(new JMenuItem("Open",scaleImageIcon(new ImageIcon("src\\gameClient\\resources\\open.png"),30,30)));
-
-        menuItems.add(new JMenuItem("Save",scaleImageIcon(new ImageIcon("src\\gameClient\\resources\\save.png"),30,30)));
+        menuItemsFile.add(new JMenuItem("Exit",scaleImageIcon(new ImageIcon("src\\gameClient\\resources\\exit.png"),30,30))); //add exit to the file
 
 
-        menuItems.add(new JMenuItem("Exit",scaleImageIcon(new ImageIcon("src\\gameClient\\resources\\exit.png"),30,30)));
 
 
-        for(JMenuItem m : menuItems)
+        for(JMenuItem m : menuItemsFile)
         {
             m.addActionListener(this);
-            menu.add(m);
+            menu1.add(m);
         }
 
     }
 
+    /**
+     * this method change the size of the image icon
+     * @param imageIcon
+     * @param width
+     * @param height
+     * @return image with new size
+     */
     private ImageIcon scaleImageIcon(ImageIcon imageIcon, int width, int height)
     {
         Image img = imageIcon.getImage();
@@ -108,14 +107,6 @@ public class MyGameFrame extends JFrame implements ActionListener {
         return new ImageIcon(newImg);
     }
 
-
-//    private void WindowBackground()
-//    {
-//        ImageIcon img = new ImageIcon("src\\gameClient\\resources\\Background\\backgroundGame.png");
-//        JLabel background = new JLabel("",img,JLabel.CENTER);
-//        background.setBounds(0,0,this.getWidth(),this.getHeight());
-//        add(background);
-//    }
 
 
 

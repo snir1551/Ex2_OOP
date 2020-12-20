@@ -10,15 +10,25 @@ import java.io.IOException;
 
 public class Agent {
 
-    private int id;
-    private double value;
-    private int src;
-    private int dest;
-    private double speed;
-    private Point3D location;
-    private String idPokemon;
-    private String image;
+    private int id; //id of agent
+    private double value; // value of agent
+    private int src; // the src node of the agent
+    private int dest; // the dest node of the agent
+    private double speed; // speed of the agent
+    private Point3D location; // the location of the agent
+    private String idPokemon; // idPokemon
+    private String image; // the path image
+    private double gradeCatchPokemon;
 
+    /**
+     *
+     * @param id
+     * @param value
+     * @param src
+     * @param dest
+     * @param speed
+     * @param location
+     */
     public Agent(int id, double value, int src, int dest, double speed, Point3D location)
     {
         this.id = id;
@@ -29,8 +39,13 @@ public class Agent {
         this.location = new Point3D(location);
         idPokemon = null;
         this.image = "src\\gameClient\\resources\\Player\\ash.png";
+        gradeCatchPokemon = 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }
@@ -68,6 +83,18 @@ public class Agent {
         return "id = " + getId() + " value = " + getValue() + " src = " + getSrc() + " dest = " + getDest() + " speed = " + getSpeed() + " location" + getLocation();
     }
 
+    public double getGradeCatchPokemon() {
+        return gradeCatchPokemon;
+    }
+
+    public void setGradeCatchPokemon(double gradeCatchPokemon) {
+        this.gradeCatchPokemon = gradeCatchPokemon;
+    }
+
+    /**
+     *
+     * @return the image of the agent
+     */
     public BufferedImage getImg()
     {
         BufferedImage agentAsh = null;

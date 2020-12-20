@@ -10,21 +10,19 @@ public class Client implements Runnable {
     private Arena arena;
     private MyGameFrame mygame;
     private ServerManagement game;
-    private double distanceNodeToPokemon = 100;
-    private double distancePokemonToNode = 100;
     private Pair<List<node_data>,Integer> path;
-    private Pair<Double,Double> d;
     public static final double EPS1 = 0.001, EPS2=EPS1*EPS1, EPS=EPS2;
-    public Client()
-    {
 
-    }
 
-    //Constructor start game from GUI
+    /**
+     * Constructor
+     * @param id - your id
+     * @param lvl - the lvl of the game
+     */
     public Client(int id,int lvl)
     {
         game = new ServerManagement(lvl);
-        boolean isLogin = game.isLogin(id);
+        boolean isLogin = game.login(id);
         if(!isLogin)
             System.exit(0);
     }
@@ -38,13 +36,12 @@ public class Client implements Runnable {
         mygame.setVisible(true);
         System.out.println(game);
 
+
         updateLogic();
         locateAgents();
         updateLogic();
-        game.startGame(); // after locateAgents
-
         Map<Integer,AgentPath> mapAgentPath = getInitialAgentPathMap();
-        updateLogic();
+
 
         new Thread(new Runnable() {
             @Override
@@ -59,45 +56,58 @@ public class Client implements Runnable {
                 }
             }
         }).start();
-        int ind=0;
-        //long dt=300;
+
+        game.startGame(); // after locateAgents
+
+        System.out.println(game.getAgents());
+        System.out.println(game.getPokemons());
         while(game.isRunning())
         {
-
             updateLogic();
             List<Agent> agentsToUpdate = new ArrayList<>();
 
             for(Agent agent: getArena().getAgents()) {
                 if(agent.getDest() == -1) {
-                    agentsToUpdate.add(agent);
+                    agentsToUpdate.add(agent); // all agents that we need to update their path
                 }
             }
 
+            long timeToSleep = 200; // 200 sleep
 
-            List<AgentPath> listSortedAgentPath = updateAgentPaths(agentsToUpdate, mapAgentPath);
-            if(listSortedAgentPath.size() != 0)
-            {
-                try {
-                    //Thread.sleep((long)listSortedAgentPath.get(0).getTimeToSleep());
-                    //Thread.sleep((long)((distanceNodeToPokemon+distancePokemonToNode)/10));
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if(agentsToUpdate.size() != 0) {
+                List<AgentPath> listSortedAgentPath = updateAgentPaths(agentsToUpdate, mapAgentPath);
+                timeToSleep = Math.min(timeToSleep, (long)(listSortedAgentPath.get(0).getTimeToSleep()*1000.0)); // minimum sleep between 200 to minimum agents sleep
+            } else {
+                for(Agent agent: getArena().getAgents()) { //go through all agents
+                    AgentPath agentPath = mapAgentPath.get(agent.getId());
+                    if(agent.getDest() == agentPath.getPath().get(agentPath.getPath().size() - 1).getKey()) { //before pokemon
+
+                        double distanceAgentToNode = distanceAgentToNode(agent, agentPath.getPath().get(agentPath.getPath().size() - 1)); // distance agent to node
+                        double distanceNodeToNode = distanceNodeToNode(agentPath.getPath().get(agentPath.getPath().size() - 2), agentPath.getPath().get(agentPath.getPath().size() - 1)); //distance node to node
+                        double w = getArena().getGraph().getEdge(agentPath.getPath().get(agentPath.getPath().size() - 2).getKey(), agentPath.getPath().get(agentPath.getPath().size() - 1).getKey()).getWeight(); // the weight of the edge of the pokemon sit
+                        double speed = agent.getSpeed(); // speed of agent
+                        timeToSleep = Math.min(timeToSleep, (long)(((w / speed) * (distanceAgentToNode / distanceNodeToNode)) * 1000)); // take the minimum sleep between
+
+                        for(Pokemon p : arena.getPokemons()) {
+                            double distToPokemon = distanceAgentToPokemon(agent, p);
+
+                            if(distToPokemon < distanceAgentToNode) {
+                                double pkTimeSleep = ((w / speed) * (distToPokemon / distanceNodeToNode))  * 0.8;
+                                timeToSleep = Math.min(timeToSleep, (long)(pkTimeSleep * 1000));
+                            }
+                        }
+                    }
                 }
             }
-            else
-            {
-                try {
-                    //Thread.sleep((long)((distanceNodeToPokemon+distancePokemonToNode)/10));
-                    //Thread.sleep((long)((dt+dtt+300)/10));
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+            try {
+                Thread.sleep(timeToSleep);
+            } catch(InterruptedException e) {
+                e.printStackTrace();
             }
+
+
             game.move();
-
-
 
         }
     }
@@ -114,20 +124,18 @@ public class Client implements Runnable {
         Map<Integer,AgentPath> map = new HashMap<>();
 
         for(Agent agent: arena.getAgents()) { //all agents
-            map.put(agent.getId(), new AgentPath(agent.getId(), new ArrayList<>(), 0));
+            map.put(agent.getId(), new AgentPath(agent.getId(), new ArrayList<>(), 0,0));
         }
 
         return map;
     }
 
-    private synchronized Arena getArena() {
-        return arena;
-    }
-
-    private synchronized void setArena(Arena arena) {
-        this.arena = arena;
-    }
-
+    /**
+     * This method update agent path that need to move
+     * @param agentsToUpdate agents that need to update their path
+     * @param mapAgentPath put path for all agents that need to update
+     * @return
+     */
     private List<AgentPath> updateAgentPaths(List<Agent> agentsToUpdate, Map<Integer,AgentPath> mapAgentPath) {
         List<Pokemon> sortedPokemons = getPokemonsSorted(getArena().getPokemons());
         List<Agent> sortedAgents = getAgentsSorted(getArena().getAgents());
@@ -136,108 +144,58 @@ public class Client implements Runnable {
             AgentPath agentPath = mapAgentPath.get(agent.getId());
 
             if(agentPath.getIndex() == agentPath.getPath().size()) {
-                // at end of path (or before path was set, at beginning of game)
-//                if(agent.getId() == 0)
-//                {
-                    path = AgentClosetPokemon(agentPath,sortedPokemons,sortedAgents);
-                    agentPath.setPath(path.getFirst());
-                    agentPath.setIndex(1);
-                    System.out.println(agent.getId());
-                    System.out.println(agent.getIdPokemon());
-                    System.out.println(sortedPokemons.get(path.getSecond()));
-                    //d = set_SDT(100,agentPath,sortedPokemons.get(path.getSecond()));
-//                }
-//                else
-//                {
-//                    List<node_data> path = new ArrayList<>();
-//                    path = shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(),sortedPokemons.get(agentPath.getId()));
-//                    agentPath.setPath(path);
-//                    agentPath.setIndex(1);
-//                    d = set_SDT(100,agentPath,sortedPokemons.get(agentPath.getId()));
-//
-//                }
 
+                path = AgentClosetPokemon(agentPath,sortedPokemons,sortedAgents);
+                agentPath.setPath(path.getFirst());
+                agentPath.setIndex(1);
 
-
-
-                //game.chooseNextEdge(agent.getId(), agentPath.getPath().get(agentPath.getIndex()).getKey());
-
-
-
-//                distanceNodeToPokemon = d.getFirst();
-//                distancePokemonToNode = d.getSecond();
-//                if(agentPath.getIndex() == agentPath.getPath().size()-1)
-//                {
-//                    try {
-//                        agentPath.setTimeToSleep(distanceNodeToPokemon);
-//                    }
-//                    catch(Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                // }
-//                else
-//                {
-//                    //moves = calculateMoves(agentPath);
-//                    try {
-//                        agentPath.setTimeToSleep(distanceNodeToPokemon);
-//                    }
-//                    catch(Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-
-
-
+                agent.setGradeCatchPokemon(sortedPokemons.get(path.getSecond()).getValue());
 
             }
-            //else {
-                // not at end of path
 
 
-                game.chooseNextEdge(agent.getId(), agentPath.getPath().get(agentPath.getIndex()).getKey());
-                //if(agentPath.getIndex() == agentPath.getPath().size()-1)
-                //{
-//                if(agent.getId() == 0)
-//                {
-//                    d = set_SDT(100, agentPath, sortedPokemons.get(path.getSecond()));
-//                }
-//                else
-//                {
-//                    d = set_SDT(100, agentPath, sortedPokemons.get(agent.getId()));
-//                }
+            if(agentPath.getIndex() == agentPath.getPath().size()-1)
+            {
+                try {
+                    double distanceNodeToPokemon = DistanceNodeToPokemon(agentPath.getPath().get(agentPath.getIndex() - 1), sortedPokemons.get(path.getSecond()));
+                    double distanceNodeToNode = distanceNodeToNode(agentPath.getPath().get(agentPath.getIndex() - 1), agentPath.getPath().get(agentPath.getIndex()));
+                    double w = getArena().getGraph().getEdge(agentPath.getPath().get(agentPath.getIndex() - 1).getKey(), agentPath.getPath().get(agentPath.getIndex()).getKey()).getWeight();
+                    double speed = agent.getSpeed();
+                    agentPath.setTimeToSleep(((distanceNodeToPokemon / distanceNodeToNode) * (w / speed)) * 0.8);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                double w = getArena().getGraph().getEdge(agentPath.getPath().get(agentPath.getIndex() - 1).getKey(), agentPath.getPath().get(agentPath.getIndex()).getKey()).getWeight();
+                double speed = agent.getSpeed();
+                agentPath.setTimeToSleep((w / speed));
+            }
 
-
-//                d = set_SDT(100, agentPath, sortedPokemons.get(path.getSecond()));
-//                distanceNodeToPokemon = d.getFirst();
-//                distancePokemonToNode = d.getSecond();
-//                if(agentPath.getIndex() == agentPath.getPath().size()-1)
-//                {
-//                    agentPath.setTimeToSleep(distanceNodeToPokemon);
-//                }
-
-                // }
-//                else
-//                {
-//                    //moves = calculateMoves(agentPath);
-//                    agentPath.setTimeToSleep(distanceNodeToPokemon);
-//                }
-                //agentPath.setTimeToSleep(distanceNodeToPokemon);
-
-                agentPath.setIndex(agentPath.getIndex() + 1);
+            game.chooseNextEdge(agent.getId(), agentPath.getPath().get(agentPath.getIndex()).getKey());
 
 
 
-            //}
+            agentPath.setIndex(agentPath.getIndex() + 1);
+
+
             sortAgentpath.add(agentPath);
         }
 
-        //Collections.sort(sortAgentpath);
+        Collections.sort(sortAgentpath);
 
         return sortAgentpath;
     }
 
+    /**
+     * checks if an agent is on an edge
+     * @param p
+     * @param src
+     * @param dest
+     * @return boolean if its on an edge
+     */
     private static boolean isOnEdge(geo_location p, geo_location src, geo_location dest ) {
 
         boolean ans = false;
@@ -261,7 +219,7 @@ public class Client implements Runnable {
 
 
     private void updateEdge(Pokemon fr, directed_weighted_graph g) {
-        //	oop_edge_data ans = null;
+
 
         for(node_data n : getArena().getGraph().getV())
         {
@@ -279,9 +237,12 @@ public class Client implements Runnable {
     }
 
 
-
-
-
+    /**
+     * this method that let us shortest path between agent to pokemon
+     * @param startNode node that our agent start
+     * @param p pokemon target
+     * @return
+     */
     private List<node_data> shortestpath(int startNode,Pokemon p)
     {
         List<node_data> listPath = new LinkedList<>();
@@ -292,33 +253,12 @@ public class Client implements Runnable {
         return listPath;
     }
 
-    private void updateLogic() {
-        //arena = new Arena(deserializeGraph(game), deserializePokemon(game), null);
-        Arena arena;
 
-        if(game.getCounterAgents() == 0)
-        {
-            arena = new Arena(game, false);
-        }
-        else
-        {
-            arena = new Arena(game, true);
-        }
-        setArena(arena);
-        //arena.setServerManagement(game);
-        for(Pokemon p : getArena().getPokemons())
-        {
-            updateEdge(p,getArena().getGraph());
-        }
-    }
-
-
-    private void updateGraphics()
-    {
-        mygame.update(getArena());
-    }
-
-
+    /**
+     * this method let us the direction that pokemon sit in the edge
+     * @param p
+     * @return
+     */
     private int keyDirectionClosePokemon(Pokemon p)
     {
         int key = -1;
@@ -340,7 +280,11 @@ public class Client implements Runnable {
     }
 
 
-
+    /**
+     * this method sort the pokemons from high value to low value
+     * @param pokemon
+     * @return
+     */
     private List<Pokemon> getPokemonsSorted(List<Pokemon> pokemon) {
         List<Pokemon> pokemonList = pokemon;
 
@@ -360,39 +304,90 @@ public class Client implements Runnable {
         return pokemonList;
     }
 
+    /**
+     *
+     * @param node node_data
+     * @param p Pokemon
+     * @return the distance between node to pokemon
+     */
+    private double DistanceNodeToPokemon(node_data node, Pokemon p)
+    {
+        return node.getLocation().distance(p.getLocation());
+    }
 
+    /**
+     *
+     * @param node1 node_data
+     * @param node2 node_data
+     * @return the distance between node1 to node2
+     */
+    private double distanceNodeToNode(node_data node1,node_data node2)
+    {
 
-    public Pair<Double,Double> set_SDT(double ddtt,AgentPath agentPath,Pokemon p) {
-        double ddt = ddtt;
-        double ddttt = 0;
-        node_data node1Location = agentPath.getPath().get(agentPath.getIndex()-1);
-        node_data node2Location;
-        node2Location = agentPath.getPath().get(agentPath.getIndex());
-        edge_data _curr_edge = getArena().getGraph().getEdge(node1Location.getKey(),node2Location.getKey());
+        return node1.getLocation().distance(node2.getLocation());
+    }
 
-        if(_curr_edge!=null) {
-            double w = _curr_edge.getWeight();
-            geo_location dest = getArena().getGraph().getNode(_curr_edge.getDest()).getLocation();
-            geo_location src = getArena().getGraph().getNode(_curr_edge.getSrc()).getLocation();
-            double de = src.distance(dest);
+    /**
+     *
+     * @param agent Agent
+     * @param node node_data
+     * @return the distance between agent to node
+     */
+    private double distanceAgentToNode(Agent agent, node_data node) {
 
-            geo_location _pos = getArena().getAgents().get(agentPath.getId()).getLocation();
+        return agent.getLocation().distance(node.getLocation());
+    }
 
-            double dist = _pos.distance(dest);
-            if(p.get_edge()==_curr_edge) {
-                dist = p.getLocation().distance(_pos);
-            }
-            double norm = dist/de;
-            double speed = getArena().getAgents().get(agentPath.getId()).getSpeed();
-            double dt = w*norm / speed;
-            double dtd = Math.abs(w-w*norm);
-            ddt = (double)(1000.0*dt);
-            ddttt = (double)(1000.0*dtd);
-        }
-        return new Pair<Double, Double>(ddt,ddttt);
+    /**
+     *
+     * @param agent Agent
+     * @param pokemon Pokemon
+     * @return the distance between agent to pokemon
+     */
+    private double distanceAgentToPokemon(Agent agent, Pokemon pokemon) {
+        return agent.getLocation().distance(pokemon.getLocation());
     }
 
 
+
+//    public Pair<Double,Double> set_SDT(double ddtt,AgentPath agentPath,Pokemon p) {
+//        double ddt = ddtt;
+//        double ddttt = 0;
+//        node_data node1Location = agentPath.getPath().get(agentPath.getIndex()-1);
+//        node_data node2Location;
+//        node2Location = agentPath.getPath().get(agentPath.getIndex());
+//        edge_data _curr_edge = getArena().getGraph().getEdge(node1Location.getKey(),node2Location.getKey());
+//
+//        if(_curr_edge!=null) {
+//            double w = _curr_edge.getWeight();
+//            geo_location dest = getArena().getGraph().getNode(_curr_edge.getDest()).getLocation();
+//            geo_location src = getArena().getGraph().getNode(_curr_edge.getSrc()).getLocation();
+//            double de = src.distance(dest);
+//
+//            geo_location _pos = getArena().getAgents().get(agentPath.getId()).getLocation();
+//
+//            double dist = _pos.distance(dest);
+//            if(p.get_edge()==_curr_edge) {
+//                dist = p.getLocation().distance(_pos);
+//            }
+//            double norm = dist/de;
+//            double speed = getArena().getAgents().get(agentPath.getId()).getSpeed();
+//            double dt = w*norm / speed;
+//            double dtd = Math.abs(w-w*norm);
+//            ddt = (double)(1000.0*dt);
+//            ddttt = (double)(1000.0*dtd);
+//        }
+//        return new Pair<Double, Double>(ddt,ddttt);
+//    }
+
+
+    /**
+     *
+     * @param agentPath AgentPath
+     * @param pokemons List<pokemon>
+     * @param agentList List<Agent>
+     * @return Pair<List<node_data>,Integer> - the path of the agent and the key of the pokemon
+     */
     private Pair<List<node_data>,Integer> AgentClosetPokemon(AgentPath agentPath, List<Pokemon> pokemons,List<Agent> agentList)
     {
         int min = Integer.MAX_VALUE;
@@ -400,38 +395,56 @@ public class Client implements Runnable {
         int location = -1;
         int i = 0;
         Pokemon pokemon = null;
-//        System.out.println(pokemons.toString());
-//        System.out.println(pokemons.size());
-        for(Pokemon p : pokemons)
-        {
-            if(shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(),p).size() < min && !isPokemonTaken(agentList,p.getId()))
-            {
-                path = shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(),p);
-                min = path.size();
-                location = i;
-                pokemon = p;
+
+        DWGraph_Algo graph_algo = new DWGraph_Algo(getArena().getGraph());
+        graph_algo.dijkstra(getArena().getGraph().getNode(getArena().getAgents().get(agentPath.getId()).getSrc()));
+
+        Pokemon minPoke = null;
+        double minDist = -1;
+        int minPokIndex = -1;
+
+        for(int j = 0; j< pokemons.size(); j++) {
+
+            Pokemon p = pokemons.get(j);
+
+            if(!isPokemonTaken(agentList,p.getId())) {
+                double dist = getArena().getGraph().getNode(p.get_edge().getSrc()).getWeight()
+                        + p.get_edge().getWeight();
+                if(minPoke == null || dist < minDist) {
+                    minPoke = p;
+                    minDist = dist;
+                    minPokIndex = j;
+                }
             }
-            i++;
         }
-//        System.out.println(agentList.size());
-//        System.out.println(agentPath.getId());
-//        System.out.println(pokemon.getId());
+
+        path = shortestpath(getArena().getAgents().get(agentPath.getId()).getSrc(), minPoke);
+        min = path.size();
+        location = minPokIndex;
+        pokemon = minPoke;
+
+
         agentList.get(agentPath.getId()).setIdPokemon(pokemon.getId());//list agent 0 -> n
         return new Pair<List<node_data>,Integer>(path,location);
     }
 
-
-private boolean isPokemonTaken(List<Agent> agentList, String pokemonId)
-{
-    for(Agent agent : agentList)
+    /**
+     * This method check if the pokemon taken by agent
+     * @param agentList - List<Agent>
+     * @param pokemonId - String pokemonId
+     * @return
+     */
+    private boolean isPokemonTaken(List<Agent> agentList, String pokemonId)
     {
-        if(agent.getIdPokemon() != null && agent.getIdPokemon().equals(pokemonId))
+        for(Agent agent : agentList)
         {
-            return true;
+            if(agent.getIdPokemon() != null && agent.getIdPokemon().equals(pokemonId))
+            {
+                return true;
+            }
         }
+        return false;
     }
-    return false;
-}
 
 
     private List<Agent> getAgentsSorted(List<Agent> agent) {
@@ -453,18 +466,55 @@ private boolean isPokemonTaken(List<Agent> agentList, String pokemonId)
         return agentList;
     }
 
-//    private double calculateMoves(AgentPath agentPath)
-//    {
-//
-//        node_data node1Location = agentPath.getPath().get(agentPath.getIndex()-1);
-//        node_data node2Location = agentPath.getPath().get(agentPath.getIndex());
-//        edge_data _curr_edge = getArena().getGraph().getEdge(node1Location.getKey(),node2Location.getKey());
-//        //double distance = distastance(node1Location,node2Location);
-//
-//        double speed = getArena().getAgents().get(agentPath.getId()).getSpeed();
-//
-//        return _curr_edge.getWeight()/speed;
-//    }
+    /**
+     * sychronized getter Arena
+     * @return arena
+     */
+    private synchronized Arena getArena() {
+        return arena;
+    }
+
+    /**
+     * sychronized setter Arena
+     * @param arena
+     */
+    private synchronized void setArena(Arena arena) {
+        this.arena = arena;
+    }
+
+    /**
+     * This method update the logic of the game
+     */
+    private void updateLogic() {
+
+        Arena arena;
+
+        if(game.getCounterAgents() == 0)
+        {
+            arena = new Arena(game, false);
+        }
+        else
+        {
+            arena = new Arena(game, true);
+        }
+        setArena(arena);
+
+        for(Pokemon p : getArena().getPokemons())
+        {
+            updateEdge(p,getArena().getGraph());
+        }
+    }
+
+
+    /**
+     * This method update the graphics of the game
+     */
+    private void updateGraphics()
+    {
+        mygame.update(getArena());
+    }
+
+
 
 
 }

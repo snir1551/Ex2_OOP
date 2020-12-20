@@ -1,5 +1,4 @@
-package api;
-
+import api.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -185,13 +184,140 @@ class DWGraph_DSTest {
 
     @Test
     void nodeSize() {
+    	
+    	directed_weighted_graph graph = new DWGraph_DS();
+        node_data node1 = new NodeData(1);
+        node_data node2 = new NodeData(2);
+        node_data node3 = new NodeData(3);
+        node_data node4 = new NodeData(4);
+        node_data node5 = new NodeData(5);
+        node_data node6 = new NodeData(6);
+        node_data node7 = new NodeData(7);
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
+        graph.addNode(node4);
+        graph.addNode(node5);
+        graph.addNode(node6);
+        graph.addNode(node7);
+        
+        graph.connect(1,2,1);
+        graph.connect(2,3,2);
+        graph.connect(3,4,3);
+        graph.connect(3,5,4);
+        graph.connect(5,6,5);
+        graph.connect(6,5,6);
+        graph.connect(6,7,7);
+        assertTrue(graph.nodeSize() == 7);
+        graph.removeNode(7);
+        assertTrue(graph.nodeSize() == 6);
+        graph.addNode(node7);
+        graph.connect(6,7,7);
+        assertTrue(graph.nodeSize() == 7);
+          	
     }
+    
 
     @Test
     void edgeSize() {
+    	
+    	directed_weighted_graph graph = new DWGraph_DS();
+        node_data node1 = new NodeData(1);
+        node_data node2 = new NodeData(2);
+        node_data node3 = new NodeData(3);
+        node_data node4 = new NodeData(4);
+        node_data node5 = new NodeData(5);
+        node_data node6 = new NodeData(6);
+        node_data node7 = new NodeData(7);
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
+        graph.addNode(node4);
+        graph.addNode(node5);
+        graph.addNode(node6);
+        graph.addNode(node7);
+        
+        graph.connect(1,2,1);
+        graph.connect(2,3,2);
+        graph.connect(3,4,3);
+        graph.connect(3,5,4);
+        graph.connect(5,6,5);
+        graph.connect(6,5,6);
+        graph.connect(6,7,7);
+        
+        assertTrue(graph.nodeSize() == 7);
+        assertTrue(graph.edgeSize() == 7);
+        graph.removeNode(7);
+        graph.removeNode(6);
+        graph.removeNode(5);
+        graph.removeNode(3);
+       
+        assertTrue(graph.nodeSize() == 3);
+        assertTrue(graph.edgeSize() == 1);
+
+
+    	
     }
 
     @Test
     void getMC() {
+    	
+    	directed_weighted_graph graph = new DWGraph_DS();
+        node_data node1 = new NodeData(1);
+        node_data node2 = new NodeData(2);
+        node_data node3 = new NodeData(3);
+        node_data node4 = new NodeData(4);
+        node_data node5 = new NodeData(5);
+        node_data node6 = new NodeData(6);
+        node_data node7 = new NodeData(7);
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
+        graph.addNode(node4);
+        graph.addNode(node5);
+        graph.addNode(node6);
+        graph.addNode(node7);
+        graph.connect(1,2,1);
+        graph.connect(2,3,2);
+        graph.connect(3,4,3);
+        graph.connect(3,5,4);
+        graph.connect(5,6,5);
+        graph.connect(6,5,6);
+        graph.connect(6,7,7);
+        
+        assertTrue(graph.nodeSize() == 7);
+        assertTrue(graph.edgeSize() == 7);
+        assertTrue(graph.getMC() == 14);
+        assertTrue(graph.edgeSize() == 7);
+        
+        graph.removeNode(6);
+        System.out.println(graph.getMC());
+        assertTrue(graph.getMC() == 18);
+      //  System.out.println(graph.getMC());
+        
+        
+    	directed_weighted_graph graph2 = new DWGraph_DS();
+    	node_data nod1 = new NodeData(1);
+        node_data nod2 = new NodeData(2);
+        node_data nod3 = new NodeData(3);
+        node_data nod4 = new NodeData(4);    
+        graph2.addNode(nod1);
+        graph2.addNode(nod2);
+        graph2.addNode(nod3);
+        graph2.addNode(nod4);
+        assertTrue(graph2.nodeSize() == 4);
+        assertTrue(graph2.getMC() == 4);
+        graph2.removeNode(1);
+        assertTrue(graph2.getMC() == 5);
+
+        
+        
+        
+        
+
+
+        
+        
+    	
     }
 }

@@ -4,17 +4,21 @@ import api.*;
 import gameClient.*;
 import gameClient.Audio.SimplePlayer;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class MyGamePanel extends JPanel {
 
-    private directed_weighted_graph graph;
+    private directed_weighted_graph graph; // the graph of the game
     private Server server;
     private Arena arena;
     private node_location location;
@@ -32,7 +36,7 @@ public class MyGamePanel extends JPanel {
         super();
         background = new ImageIcon("src\\gameClient\\resources\\Background\\backgroundGame.png").getImage();
         setFont(new Font("Verdana", Font.BOLD, 12));
-        buttonMusic();
+
     }
 
     public void update(Arena arena)
@@ -44,7 +48,6 @@ public class MyGamePanel extends JPanel {
         minX = location.getMinXNodeData().getLocation().x();
         maxY = location.getMaxYNodeData().getLocation().y();
         minY = location.getMinYNodeData().getLocation().y();
-        this.setBackground(Color.blue);
     }
 
 
@@ -75,8 +78,11 @@ public class MyGamePanel extends JPanel {
      */
     private void drawGraph(Graphics g)
     {
+
+
+
         g.setColor(Color.blue);
-        int r = 5;
+        int r = 7;
         double xNode;
         double yNode;
         for(node_data nd : graph.getV())
@@ -84,9 +90,9 @@ public class MyGamePanel extends JPanel {
 
             xNode = scale(nd.getLocation().x(),minX,maxX,20,this.getWidth()-20);
             yNode = scale(nd.getLocation().y(),minY,maxY,this.getHeight()-10,150);
-            g.fillOval((int)xNode - r, (int)yNode - r, 2*r, 2*r);
+            //g.fillOval((int)xNode - r, (int)yNode - r, 2*r, 2*r);
+            g.drawImage(getImgNode(),(int)xNode - r, (int)yNode - r, 2*r, 2*r,this);
             g.drawString(""+nd.getKey(), (int)xNode- r, (int)yNode- r);
-
         }
 
         g.setColor(Color.black);
@@ -95,6 +101,8 @@ public class MyGamePanel extends JPanel {
         double yNodeSrc;
         double xNodeDest;
         double yNodeDest;
+
+
         for(node_data nd : graph.getV())
         {
             for(edge_data e : graph.getE(nd.getKey()))
@@ -124,7 +132,10 @@ public class MyGamePanel extends JPanel {
         {
             x = scale(p.getLocation().x(),minX,maxX,20,this.getWidth()-20);
             y = scale(p.getLocation().y(),minY,maxY,this.getHeight()-10,150);
-            g.drawImage(p.getImg(),(int)x - r, (int)y - r, 2*r, 2*r,this);
+            if(p.getType() == -1)
+                g.drawImage(p.getImg(),(int)x - r, (int)y - r, 2*r, 2*r,this);
+            else
+                g.drawImage(p.getImg(),(int)x - r, (int)y - r, 2*(r+3), 2*(r+3),this);
         }
     }
 
@@ -143,6 +154,7 @@ public class MyGamePanel extends JPanel {
             double x = scale(a.getLocation().x(),minX,maxX,20,this.getWidth()-20);
             double y = scale(a.getLocation().y(),minY,maxY,this.getHeight()-10,150);
             g.drawImage(a.getImg(),(int)x - r, (int)y - r, 2*r, 2*r,this);
+            g.drawString( "Agent " + a.getId() + ": " + a.getValue(),(int)x - r,(int)y - r-5);
         }
 
     }
@@ -188,18 +200,20 @@ public class MyGamePanel extends JPanel {
         return res;
     }
 
-    private void buttonMusic()
+
+    private BufferedImage getImgNode()
     {
-        Button musicButton = new Button("MusicOFF");
-        musicButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        this.add(musicButton);
+        BufferedImage nodeImg = null;
+        String image = "src\\gameClient\\resources\\Nodes\\ball1.png";
+        File nodeFileImg = new File(image);
+        try {
+            nodeImg = ImageIO.read(nodeFileImg);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return nodeImg;
     }
-
-
 
 }

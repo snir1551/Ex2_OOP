@@ -11,15 +11,15 @@ import gameClient.ServerManagement;
 
 public class WelcomeGUI extends JFrame {
 
-    private int userID;
-    private int stage;
+    private int userID; // the id of the user
+    private int stage; // the lvl of the game
     private ServerManagement serverManagement;
     public WelcomeGUI()
     {
-        super("Login");
-        initGUI();
-        welcomWindow();
-        initLogin();
+        super("Login"); //Login
+        initGUI(); // init gui
+        welcomWindow(); // welcome window
+        initLogin(); //
 
     }
 
@@ -35,14 +35,14 @@ public class WelcomeGUI extends JFrame {
     }
     private void initLogin()
     {
-        String[] optionsMusic = {"YES","NO"};
+        String[] optionsMusic = {"YES","NO"}; // if someone want music
         int MusicNum = JOptionPane.showOptionDialog(null, "Do you want Music in your game?", "Click a button YES or NO",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, optionsMusic, optionsMusic[0]);
         if(MusicNum == 0)
         {
             SimplePlayer player = new SimplePlayer("src\\gameClient\\resources\\Audio\\PokemonSong.mp3");
             Thread playerThread = new Thread(player);
-            playerThread.start();
+            playerThread.start(); // play thread music
         }
         else if(MusicNum != 1)
         {
@@ -54,8 +54,8 @@ public class WelcomeGUI extends JFrame {
             String id = JOptionPane.showInputDialog("Enter your id number" );
             try {
                 if(id.length() != 9)
-                {
-                    tryID--;
+                    {
+                        tryID--;
                     JOptionPane.showMessageDialog(null, "Invalid input, length of id need to be 9, You have " + tryID +  " more attempts", "Error", JOptionPane.ERROR_MESSAGE);
                     if(tryID == 0)
                         System.exit(0);
@@ -78,7 +78,7 @@ public class WelcomeGUI extends JFrame {
             ImageIcon icon = new ImageIcon(newimg);
             String[] options = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23"};
             int gameNum = JOptionPane.showOptionDialog(null, "Choose the level you want to play", "Click a button",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, options, options[0]);
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, options, options[0]); // choose lvl
             this.stage = gameNum;
             if (gameNum == JOptionPane.CLOSED_OPTION){
                 System.exit(0);
@@ -91,6 +91,7 @@ public class WelcomeGUI extends JFrame {
             e.printStackTrace();
         }
     }
+
 
     private void welcomWindow(){
         try {

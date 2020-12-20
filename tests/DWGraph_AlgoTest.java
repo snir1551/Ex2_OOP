@@ -1,8 +1,10 @@
-package api;
-
+import api.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.LinkedList;
+import java.util.List;
 
 class DWGraph_AlgoTest {
 
@@ -116,6 +118,44 @@ class DWGraph_AlgoTest {
     @Test
     void shortestPath() {
 
+    	directed_weighted_graph graph = new DWGraph_DS();
+        node_data node1 = new NodeData(1);
+        node_data node2 = new NodeData(2);
+        node_data node3 = new NodeData(3);
+        node_data node4 = new NodeData(4);
+        node_data node5 = new NodeData(5);
+        node_data node6 = new NodeData(6);
+        node_data node7 = new NodeData(7);
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
+        graph.addNode(node4);
+        graph.addNode(node5);
+        graph.addNode(node6);
+        graph.addNode(node7);
+        graph.connect(1,2,1);
+        graph.connect(2,3,2);
+        graph.connect(3,4,3);
+        graph.connect(3,5,4);
+        graph.connect(4,1,4);
+        graph.connect(4,6,4);
+        graph.connect(1,6,5);
+        graph.connect(5,6,5);
+        graph.connect(6,5,6);
+        graph.connect(6,7,7);
+        
+        assertTrue(graph.nodeSize() == 7);
+        assertTrue(graph.edgeSize() == 10);
+        assertTrue(graph.getMC() == 17);
+    
+        
+        dw_graph_algorithms g=new DWGraph_Algo(graph);
+        List<node_data> list=g.shortestPath(node1.getKey(),node5.getKey());
+        
+
+        assertTrue(list.size() == 4);
+
+        
     }
 
     @Test

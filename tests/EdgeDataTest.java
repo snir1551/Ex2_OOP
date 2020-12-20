@@ -1,5 +1,5 @@
-package api;
-
+import api.EdgeData;
+import api.edge_data;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;

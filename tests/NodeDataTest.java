@@ -1,5 +1,5 @@
-package api;
-
+import api.NodeData;
+import api.node_data;
 import gameClient.util.Point3D;
 import org.junit.jupiter.api.Test;
 
@@ -153,7 +153,7 @@ class NodeDataTest {
 
     @Test
     void setTag() {
-        Point3D location = new Point3D(1,2,3);
+      
         Random rand = new Random();
         int tag = 0;
         for(int i = 0; i<10000000; i++)

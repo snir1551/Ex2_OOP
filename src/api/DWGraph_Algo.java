@@ -19,22 +19,39 @@ public class DWGraph_Algo implements dw_graph_algorithms{
         init(graph);
     }
 
+    /**
+     * Init the graph on which this set of algorithms operates on.
+     * @param g
+     */
     @Override
     public void init(directed_weighted_graph g) {
         this.graph = g;
     }
 
+    /**
+     * Return the underlying graph of which this class works.
+     * @return
+     */
     @Override
     public directed_weighted_graph getGraph() {
         return this.graph;
     }
 
+    /**
+     * Compute a deep copy of this weighted graph.
+     * @return
+     */
     @Override
     public directed_weighted_graph copy() {
         directed_weighted_graph copyGraph = new DWGraph_DS(graph);
         return copyGraph;
     }
 
+    /**
+     * Returns true if and only if (iff) there is a valid path from each node to each
+     * other node. NOTE: assume directional graph (all n*(n-1) ordered pairs).
+     * @return
+     */
     @Override
     public boolean isConnected() {
         if(graph.nodeSize() <= 1)
@@ -43,6 +60,13 @@ public class DWGraph_Algo implements dw_graph_algorithms{
         return listComponents.size() == 1;
     }
 
+    /**
+     * returns the length of the shortest path between src to dest
+     * Note: if no such path --> returns -1
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return
+     */
     @Override
     public double shortestPathDist(int src, int dest) {
         if(graph.getNode(src) == null || graph.getNode(dest) == null) //if one of the nodes not exist return -1
@@ -55,6 +79,15 @@ public class DWGraph_Algo implements dw_graph_algorithms{
         return graph.getNode(dest).getWeight(); // return the shortest path between them by the tag that contain the distance
     }
 
+    /**
+     * returns the the shortest path between src to dest - as an ordered List of nodes:
+     * src--> n1-->n2-->...dest
+     * see: https://en.wikipedia.org/wiki/Shortest_path_problem
+     * Note if no such path --> returns null;
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return
+     */
     @Override
     public List<node_data> shortestPath(int src, int dest) {
         LinkedList<node_data> list = new LinkedList<>(); //list of the path from src to dest
@@ -85,6 +118,12 @@ public class DWGraph_Algo implements dw_graph_algorithms{
         return list;
     }
 
+    /**
+     * Saves this weighted (directed) graph to the given
+     * file name - in JSON format
+     * @param file - the file name (may include a relative path).
+     * @return true - iff the file was successfully saved
+     */
     @Override
     public boolean save(String file) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -102,6 +141,14 @@ public class DWGraph_Algo implements dw_graph_algorithms{
         }
     }
 
+    /**
+     * This method load a graph to this graph algorithm.
+     * if the file was successfully loaded - the underlying graph
+     * of this class will be changed (to the loaded one), in case the
+     * graph was not loaded the original graph should remain "as is".
+     * @param file - file name of JSON file
+     * @return true - iff the graph was successfully loaded.
+     */
     @Override
     public boolean load(String file) {
         try {
@@ -120,7 +167,7 @@ public class DWGraph_Algo implements dw_graph_algorithms{
 
 
 
-    private HashMap<Integer, node_data> dijkstra(node_data node)
+    public HashMap<Integer, node_data> dijkstra(node_data node)
     {
         PriorityQueue<node_data> queue = new PriorityQueue<>(); // init PriorityQueue of node_info
         HashMap<Integer,node_data> mapPath = new HashMap<>(); //init HashMap of key: Integer , value: node_info
@@ -162,27 +209,11 @@ public class DWGraph_Algo implements dw_graph_algorithms{
 
 
 
-//    public static void main(String[] args) {
-//        directed_weighted_graph graph = new DWGraph_DS();
-//        for(int i = 0; i < 5; i++)
-//        {
-//            node_data node = new NodeData(i);
-//            graph.addNode(node);
-//        }
-//        graph.connect(0,1,0);
-//        graph.connect(1,0,1);
-//        graph.connect(0,2,2);
-//        graph.connect(3,0,4);
-//        graph.connect(4,3,5);
-//        graph.connect(3,4,6);
-//        graph.connect(2,1,6);
-//        graph.connect(2,1,6);
-//        graph.connect(2,4,6);
-//
-//        DWGraph_Algo algo = new DWGraph_Algo(graph);
-//        List<List<node_data>> comp = algo.tarjan();
-//    }
-
+    /**
+     * Tarjan's strongly connected components algorithm
+     * finding the strongly connected components (SCCs) of a directed graph.
+     * @return
+     */
     private List<List<node_data>> tarjan() {
         List<List<node_data>> components = new ArrayList<>();
 
@@ -202,6 +233,15 @@ public class DWGraph_Algo implements dw_graph_algorithms{
         return components;
     }
 
+    /**
+     * DFS is an algorithm for traversing or searching tree or graph data structures.
+     * The algorithm starts at the root node (selecting some arbitrary node as the root node in the case of a graph)
+     * and explores as far as possible along each branch before backtracking.
+     * @param nodeData
+     * @param time
+     * @param stack
+     * @param components
+     */
     private void dfs(node_data nodeData, int time, Stack<node_data> stack, List<List<node_data>> components ) {
         nodeData.setTag(time);
         time++;
@@ -240,5 +280,25 @@ public class DWGraph_Algo implements dw_graph_algorithms{
 
 
 
+    //    public static void main(String[] args) {
+//        directed_weighted_graph graph = new DWGraph_DS();
+//        for(int i = 0; i < 5; i++)
+//        {
+//            node_data node = new NodeData(i);
+//            graph.addNode(node);
+//        }
+//        graph.connect(0,1,0);
+//        graph.connect(1,0,1);
+//        graph.connect(0,2,2);
+//        graph.connect(3,0,4);
+//        graph.connect(4,3,5);
+//        graph.connect(3,4,6);
+//        graph.connect(2,1,6);
+//        graph.connect(2,1,6);
+//        graph.connect(2,4,6);
+//
+//        DWGraph_Algo algo = new DWGraph_Algo(graph);
+//        List<List<node_data>> comp = algo.tarjan();
+//    }
 
 }
