@@ -20,9 +20,9 @@ and the Classses on this Project is:
 5. [DWGraph_Algo](#DWGraph_Algo)
 6. [ NodeLocation](#NodeLocation)
 7. [ DirectedWeightedGraphJsonWrapper](#DirectedWeightedGraphJsonWrapper)
-8.[ EdgeDataJsonWrapper](#EdgeDataJsonWrapper)
-9.[ GeoLocationJsonWrapper](#GeoLocationJsonWrapper)
-10.[ NodeDataJsonWrapper](#NodeDataJsonWrapper)
+8. [ EdgeDataJsonWrapper](#EdgeDataJsonWrapper)
+9. [ GeoLocationJsonWrapper](#GeoLocationJsonWrapper)
+10. [ NodeDataJsonWrapper](#NodeDataJsonWrapper)
 
 <a name="nodedata"></a>
 ## 1. NodeData 
@@ -150,6 +150,9 @@ This class represents a number of functions that relate to the game's start menu
 
 
 <a name="run"></a>
+
+## Running the game:
+
 How To Use?
 
 
