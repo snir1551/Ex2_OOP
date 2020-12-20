@@ -19,10 +19,10 @@ and the Classses on this Project is:
 4. [DWGraph_DS](#DWGraph_DS)
 5. [DWGraph_Algo](#DWGraph_Algo)
 6. [ NodeLocation](#NodeLocation)
-7. DirectedWeightedGraphJsonWrapper(#DirectedWeightedGraphJsonWrapper)
-8.EdgeDataJsonWrapper(#EdgeDataJsonWrapper)
-9.GeoLocationJsonWrapper(#GeoLocationJsonWrapper)
-10.NodeDataJsonWrapper(#NodeDataJsonWrapper)
+7. [ DirectedWeightedGraphJsonWrapper](#DirectedWeightedGraphJsonWrapper)
+8.[ EdgeDataJsonWrapper](#EdgeDataJsonWrapper)
+9.[ GeoLocationJsonWrapper](#GeoLocationJsonWrapper)
+10.[ NodeDataJsonWrapper](#NodeDataJsonWrapper)
 
 <a name="nodedata"></a>
 ## 1. NodeData 
@@ -147,9 +147,10 @@ This class represents a number of functions that relate to the game's start menu
 
 
 
+
+
+<a name="run"></a>
 How To Use?
-
-
 
 
 1)First thing you have to do is enter you ID(only 9 numbers- if you enter less or more you will not enter to the game-(you have 3 chance to enter id )) and it would link and connect you to the server to save your score.
