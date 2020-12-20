@@ -154,13 +154,17 @@ This class represents a number of functions that relate to the game's start menu
 ## Running the game:
 
 How To Use?
+* [Option 1](#Option1)
+* [Option 2](#Option2)
 
 
+<a name="Option1"></a>
+## Option 1:
 1)First thing you have to do is enter you ID(only 9 numbers- if you enter less or more you will not enter to the game-(you have 3 chance to enter id )) and it would link and connect you to the server to save your score.
 
 LIKE THIS:
 
-http://www.siz.co.il/view/ywgzuym5on3z.png.htm
+<a href="http://www.siz.co.il/"><img src="http://up419.siz.co.il/up1/wgzwokzyjgmz.png" border="0" alt="ID" /></a>
 
 
 
@@ -170,7 +174,7 @@ LIKE THIS:
 
 
 
-http://www.siz.co.il/view/mjl2ztyyhmhz.png.htm
+<a href="http://www.siz.co.il/"><img src="http://up419.siz.co.il/up3/tt1hzannzdgi.png" border="0" alt="בחירת שלב" /></a>
 
 
 
@@ -187,7 +191,8 @@ LIKE THIS:
 
 
 
-
+<a name="Option2"></a>
+## Option 2:
 Another way to do it is directly from the command line.
 Example:
 
