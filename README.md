@@ -2,7 +2,7 @@
 
 # Description
 This project is devided into two:
-first part concern of building a weighted and directed graph,
+The first part deals with building a weighted and directed graph,
 the second part focuses on a game which uses the first part.
 
 * [Part 1](#p1)
@@ -11,8 +11,9 @@ the second part focuses on a game which uses the first part.
 
 <a name="p1"></a>
 ## Part 1:
-At this project we 7 interfaces: directed_weighted_graph,dw_graph_algorithms,edge_data,edge_location,game_service,node_data,node_location,geo_location.
-and the Classses on this Project is:
+At this project we 7 interfaces: directed_weighted_graph,dw_graph_algorithms,edge_data,edge_location,node_data,node_location,geo_location.
+
+ and the Classses on this Project is:
 1. [ NodeData ](#nodedata)
 2. [ EdgeData ](#edge)
 3. [ Point3D](#geo)
@@ -58,22 +59,23 @@ A NodeLocation Class have function that compare x, y and return minX,maxX,minY,m
 
 <a name="DirectedWeightedGraphJsonWrapper"></a>
 ## 7. DirectedWeightedGraphJsonWrapper
-This class 
+this class Part of the conversion to a general graph format
 
 
 <a name="EdgeDataJsonWrapper"></a>
 ## 8. EdgeDataJsonWrapper
-This class 
-
-
+this class Part of the conversion to a general graph format
+ 
 <a name="GeoLocationJsonWrapper"></a>
 ## 9. GeoLocationJsonWrapper
-This class 
+this class Part of the conversion to a general graph format
+
 
 
 <a name="NodeDataJsonWrapper"></a>
 ## 10. NodeDataJsonWrapper
-This class 
+this class Part of the conversion to a general graph format
+
 
 
 
@@ -103,11 +105,16 @@ to each pokemon has a different value, and as your agent/s eat more pokemons the
 6. [MyGameFrame](#gfr)
 7. [MyGamePanel](#gpl)
 8. [WelcomeGUI](#lbl)
+9. [Server](#Server)
+10. [ServerManagement](#ServerManagement)
+11. [NodeLocation](#NodeLocation)
+12. [Range](#Range)
+13. [Range2D](#Range2D)
+14. [Range2Range](#Range2Range)
 
 <a name="ar"></a>
 ## 1. Arena
-This class represents a multi Agents Arena which move on a graph and grabs Pokemons. Given class from OOP course.
-
+This class represents all the information of the server.
 
 <a name="ag"></a>
 ## 2. Agent
@@ -121,11 +128,11 @@ This class represents a pokemon in the game.
 
 <a name="ex"></a>
 ## 4. Ex2
-This class is the main class in the second part, which its main method the game starts.
+This class is the main class , which its main method the game starts.
 
 <a name="Client"></a>
 ## 5. Client
-This class represents a 
+This class represents the management and the logic of the game 
 
 
 <a name="gfr"></a>
@@ -145,8 +152,30 @@ This class represents a specific adapted JPanel to this project.
 This class represents a number of functions that relate to the game's start menu and part of the GUI
 
 
+<a name="Server"></a>
+## 9. Server
+This class Gets all the information from the server for each step respectively
+
+<a name="ServerManagement"></a>
+## 10. ServerManagement
+This class represent serive game
+
+<a name="NodeLocation"></a>
+## 11. NodeLocation
+This class represents the calculate of the graph inside the panel
+
+<a name="Range"></a>
+## 12. Range
+This class take part of the calculation at location the graph and nodes
 
 
+<a name="Range2D"></a>
+## 13. Range2D
+This class take part of the calculation at location the graph and nodes
+
+<a name="Range2Range"></a>
+## 14. Range2Range
+This class take part of the calculation at location the graph and nodes
 
 
 <a name="run"></a>
