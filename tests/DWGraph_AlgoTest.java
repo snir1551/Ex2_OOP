@@ -159,7 +159,7 @@ class DWGraph_AlgoTest {
     }
 
     @Test
-    void save() {
+    void save_load() {
         directed_weighted_graph graph = new DWGraph_DS();
         node_data node = new NodeData(1);
         node_data node1 = new NodeData(2);
@@ -168,13 +168,11 @@ class DWGraph_AlgoTest {
         graph.connect(node1.getKey(),node.getKey(),20);
         dw_graph_algorithms graphAlgo = new DWGraph_Algo(graph);
         graphAlgo.save("file1");
-    }
 
-    @Test
-    void load() {
-        dw_graph_algorithms graphAlgo = new DWGraph_Algo(null);
-        graphAlgo.load("file1");
-        directed_weighted_graph g = graphAlgo.copy();
+        dw_graph_algorithms graphAlgo1 = new DWGraph_Algo(null);
+        graphAlgo1.load("file1");
+        directed_weighted_graph g = graphAlgo1.copy();
         System.out.println(g.edgeSize());
     }
+
 }

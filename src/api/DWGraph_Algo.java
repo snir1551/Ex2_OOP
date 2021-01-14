@@ -1,8 +1,7 @@
 package api;
 
 import JsonWrapper.DirectedWeightedGraphJsonWrapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -280,25 +279,184 @@ public class DWGraph_Algo implements dw_graph_algorithms{
 
 
 
-    //    public static void main(String[] args) {
-//        directed_weighted_graph graph = new DWGraph_DS();
-//        for(int i = 0; i < 5; i++)
-//        {
-//            node_data node = new NodeData(i);
-//            graph.addNode(node);
-//        }
-//        graph.connect(0,1,0);
-//        graph.connect(1,0,1);
-//        graph.connect(0,2,2);
-//        graph.connect(3,0,4);
-//        graph.connect(4,3,5);
-//        graph.connect(3,4,6);
-//        graph.connect(2,1,6);
-//        graph.connect(2,1,6);
-//        graph.connect(2,4,6);
-//
-//        DWGraph_Algo algo = new DWGraph_Algo(graph);
-//        List<List<node_data>> comp = algo.tarjan();
-//    }
+    public List<Integer> componnt(int at) {
+        List<Integer> path = new ArrayList<Integer>();
+        if (this.graph == null||this.graph.getNode(at)==null){
+            return path;
+        }
+
+        int id = 0;
+        Stack<Integer> stack =new Stack<Integer>();
+        HashMap<Integer,Integer> lows = new HashMap<Integer,Integer>();
+        HashMap<Integer,Integer> ids = new HashMap<Integer,Integer>();
+        HashMap<Integer,Boolean> onStack = new HashMap<Integer,Boolean>();
+
+
+
+        for (node_data i:this.graph.getV()) {
+            lows.put(i.getKey(), 0);
+            ids.put(i.getKey(), 0);
+            onStack.put(i.getKey(),false);
+        }
+        int v=at;
+        Stack<Pair> work=new Stack<Pair>();
+        work.add(new Pair(v,0));
+        while (!work.isEmpty()){
+            Pair p= work.pop();
+            v=p.v;
+            int i=p.i;
+            if (i==0){
+                stack.add(v);
+                id++;
+                lows.put(v, id);
+                ids.put(v, id);
+                onStack.put(v, true);
+            }
+            boolean  recurse = false;
+            int j=0;
+            for(edge_data edge:this.graph.getE(v)) {
+                int w=edge.getDest();
+                if (ids.get(w)==0) {
+                    work.add(new Pair(v,j+1));
+                    work.add(new Pair(w,0));
+                    recurse =true;
+                    j++;
+                    break;
+                }else if(onStack.get(w)) {
+                    j++;
+                    lows.put(v, Math.min(lows.get(v), lows.get(w)));
+                }
+            }
+
+            if (recurse) continue;
+            if(ids.get(v) == lows.get(v)) {
+                path.clear();
+                while(!stack.isEmpty()) {
+                    int node = stack.pop();
+                    path.add(node);
+                    onStack.put(node, false);
+                    lows.put(node, ids.get(v));
+                    if(node==v) break;
+                }
+
+            }
+            if (!work.isEmpty()) {
+                int w = v;
+                Pair pe = work.peek();
+                v=pe.v;
+                lows.put(v, Math.min(lows.get(v), lows.get(w)));
+            }
+        }
+
+        return path;
+    }
+
+
+    public List<String> componnts() {
+        List<String> path_lists=new ArrayList<String>();
+        if (this.graph == null){
+            return path_lists;
+        }
+
+        int id = 0;
+        Stack<Integer> stack =new Stack<Integer>();
+        HashMap<Integer,Integer> lows = new HashMap<Integer,Integer>();
+        HashMap<Integer,Integer> ids = new HashMap<Integer,Integer>();
+        HashMap<Integer,Boolean> onStack = new HashMap<Integer,Boolean>();
+
+        List<Integer> path = new ArrayList<Integer>();
+
+        for (node_data i:this.graph.getV()) {
+            lows.put(i.getKey(), 0);
+            ids.put(i.getKey(), 0);
+            onStack.put(i.getKey(),false);
+        }
+
+        for (node_data no :this.graph.getV()) {
+            if (ids.get(no.getKey()) == 0){
+                int v=no.getKey();
+                Stack<Pair> work=new Stack<Pair>();
+                work.add(new Pair(v,0));
+                while (!work.isEmpty()){
+                    Pair p= work.pop();
+                    v=p.v;
+                    int i=p.i;
+                    if (i==0){
+                        stack.add(v);
+                        id++;
+                        lows.put(v, id);
+                        ids.put(v, id);
+                        onStack.put(v, true);
+                    }
+                    boolean  recurse = false;
+                    int j=0;
+                    for(edge_data edge:this.graph.getE(v)) {
+                        int w=edge.getDest();
+                        if (ids.get(w)==0) {
+                            work.add(new Pair(v,j+1));
+                            work.add(new Pair(w,0));
+                            recurse =true;
+                            j++;
+                            break;
+                        }else if(onStack.get(w)) {
+                            j++;
+                            lows.put(v, Math.min(lows.get(v), lows.get(w)));
+                        }
+                    }
+
+                    if (recurse) continue;
+                    if(ids.get(v) == lows.get(v)) {
+                        path.clear();
+                        while(!stack.isEmpty()) {
+                            int node = stack.pop();
+                            path.add(node);
+                            onStack.put(node, false);
+                            lows.put(node, ids.get(v));
+                            if(node==v) break;
+                        }
+                        path_lists.add(Arrays.deepToString(path.toArray()));
+                    }
+                    if (!work.isEmpty()) {
+                        int w = v;
+                        Pair pe = work.peek();
+                        v=pe.v;
+                        lows.put(v, Math.min(lows.get(v), lows.get(w)));
+                    }
+                }
+
+            }
+
+        }
+
+        return path_lists;
+    }
+
+    public boolean loadNx(String file) {
+        try {
+
+            directed_weighted_graph newGraph = new DWGraph_DS();
+            JsonObject json = new JsonParser().parse(new FileReader(file)).getAsJsonObject();
+            JsonArray E = json.getAsJsonArray("Edges");
+            JsonArray V = json.getAsJsonArray("Nodes");
+            //run by json and convert it to Nodes
+            for (JsonElement node: V){
+                int id = node.getAsJsonObject().get("id").getAsInt();
+                NodeData n = new NodeData(id);
+                newGraph.addNode(n);
+            }
+            //run by json and convert it to Edges
+            for (JsonElement edge : E){
+                int src = edge.getAsJsonObject().get("src").getAsInt();
+                int dest = edge.getAsJsonObject().get("dest").getAsInt();
+                double w = edge.getAsJsonObject().get("w").getAsDouble();
+                newGraph.connect(src,dest,w);
+            }
+            this.graph = newGraph;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
 }
