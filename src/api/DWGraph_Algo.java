@@ -2,6 +2,7 @@ package api;
 
 import JsonWrapper.DirectedWeightedGraphJsonWrapper;
 import com.google.gson.*;
+import gameClient.util.Point3D;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -441,8 +442,13 @@ public class DWGraph_Algo implements dw_graph_algorithms{
             //run by json and convert it to Nodes
             for (JsonElement node: V){
                 int id = node.getAsJsonObject().get("id").getAsInt();
-                NodeData n = new NodeData(id);
-                newGraph.addNode(n);
+                String pos = node.getAsJsonObject().get("pos").getAsString();
+                String[] splitPos = pos.split(",");
+                double posX = Double.parseDouble(splitPos[0]);
+                double posY = Double.parseDouble(splitPos[1]);
+                double posZ = Double.parseDouble(splitPos[2]);
+                node_data new_node = new NodeData(id,new Point3D(posX,posY,posZ));
+                newGraph.addNode(new_node);
             }
             //run by json and convert it to Edges
             for (JsonElement edge : E){

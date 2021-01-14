@@ -19,6 +19,8 @@ public class TestTimeAlgorithms {
         for(int i = 0; i < nodes.length; i++)
         {
             graph_algo.loadNx("data//Graphs_on_circle//G_" + nodes[i] + "_"+edges[i]+"_1.json");
+            if(i == 0)
+                graph_algo.save("file");
             start = new Date().getTime();
             graph_algo.shortestPath(1,3);
             end = new Date().getTime();
